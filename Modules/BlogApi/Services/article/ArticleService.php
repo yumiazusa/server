@@ -101,7 +101,7 @@ class ArticleService extends BaseApiService
         $list = $model->select('id','title')
             ->orderBy('sort','asc')
             ->orderBy('id','desc')
-            ->limit(6)
+            ->limit(5)
             ->get()->toArray();
         return $this->apiSuccess('',$list);
     }
