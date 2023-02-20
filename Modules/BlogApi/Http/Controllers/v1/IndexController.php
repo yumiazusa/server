@@ -1,4 +1,12 @@
 <?php
+/*
+ * @Author: yumiazusa yumiazusa@hotmail.com
+ * @Date: 2023-02-13 15:49:16
+ * @LastEditors: yumiazusa
+ * @LastEditTime: 2023-02-20 22:40:05
+ * @FilePath: /www/miledo/server/Modules/BlogApi/Http/Controllers/v1/IndexController.php
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
 // +----------------------------------------------------------------------
 // | Name: 咪乐多管理系统 [ 为了快速搭建软件应用而生的，希望能够帮助到大家提高开发效率。 ]
 // +----------------------------------------------------------------------
@@ -73,7 +81,8 @@ class IndexController extends BaseApiController
             'type_id',
             'title',
             'page',
-            'limit'
+            'limit',
+            'open'
         ]));
     }
 

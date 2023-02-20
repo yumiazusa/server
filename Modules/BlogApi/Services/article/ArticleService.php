@@ -42,7 +42,11 @@ class ArticleService extends BaseApiService
      **/
     public function articleList(array $data){
         $model = BlogArticle::query();
-        $model = $model->where(['is_delete'=>0,'project_id'=>$this->projectId,'status'=>1]);
+        if(!empty($data['open'])){
+            $model = $model->where(['is_delete'=>0,'project_id'=>$this->projectId,'status'=>1,'open'=>$data['open']]);
+        }else{
+            $model = $model->where(['is_delete'=>0,'project_id'=>$this->projectId,'status'=>1]);
+        }
         $model = $this->queryCondition($model,$data,'title');
         if (isset($data['type_id']) && $data['type_id'] > 0){
             $model = $model->where('type_id',$data['type_id']);
