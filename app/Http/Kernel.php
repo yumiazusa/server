@@ -64,6 +64,7 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'AdminApiAuth'=> \Modules\Admin\Http\Middleware\AdminApiAuth::class,
         'BlogApiAuth'=> \Modules\BlogApi\Http\Middleware\BlogApiAuth::class,
+        'StudentsApiAuth'=> \Modules\Students\Http\Middleware\StudentsApiAuth::class,
         'TestApiAuth'=> \Modules\Test\Http\Middleware\TestApiAuth::class,
     ];
 }

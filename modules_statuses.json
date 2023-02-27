@@ -2,5 +2,6 @@
     "Admin": true,
     "Blog": true,
     "BlogApi": true,
-    "Test": true
+    "Test": true,
+    "Students": true
 }

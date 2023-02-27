@@ -1,21 +1,12 @@
 <?php
-// +----------------------------------------------------------------------
-// | Name: 咪乐多管理系统 [ 为了快速搭建软件应用而生的，希望能够帮助到大家提高开发效率。 ]
-// +----------------------------------------------------------------------
-// | Copyright: (c) 2020~2021 https://www.lvacms.cn All rights reserved.
-// +----------------------------------------------------------------------
-// | Licensed: 这是一个自由软件，允许对程序代码进行修改，但希望您留下原有的注释。
-// +----------------------------------------------------------------------
-// | Author: 西安咪乐多软件 <997786358@qq.com>
-// +----------------------------------------------------------------------
-// | Version: V1
-// +----------------------------------------------------------------------
-
-/**
- * @Name  平台用户模型
- * @Description
- * @Auther 西安咪乐多软件
- * @Date 2021/6/29 14:27
+/*
+ * @Author: yumiazusa
+ * @Date: 2022-12-08 10:24:52
+ * @LastEditTime: 2023-02-27 16:47:11
+ * @LastEditors: yumiazusa
+ * @Description: 平台用户模型
+ * @FilePath: /www/miledo/server/Modules/Admin/Models/AuthUser.php
+ * yumiazusa@hotmail.com
  */
 
 namespace Modules\Admin\Models;
@@ -26,8 +17,6 @@ class AuthUser extends BaseApiModel
     /**
      * @name 更新时间为null时返回
      * @description
-     * @author 西安咪乐多软件
-     * @date 2021/6/21 16:33
      * @param value String  $value
      * @return Boolean
      **/
@@ -38,8 +27,6 @@ class AuthUser extends BaseApiModel
     /**
      * @name 隐藏密码
      * @description
-     * @author 西安咪乐多软件
-     * @date 2021/6/29 14:30
      **/
     protected $hidden = [
         'password'
@@ -48,8 +35,7 @@ class AuthUser extends BaseApiModel
     /**
      * @name  关联省   多对一
      * @description
-     * @author 西安咪乐多软件
-     * @date 2021/6/12 3:12
+     
      **/
     public function province_to()
     {
@@ -58,8 +44,7 @@ class AuthUser extends BaseApiModel
     /**
      * @name  关联市   多对一
      * @description
-     * @author 西安咪乐多软件
-     * @date 2021/6/12 3:12
+     
      **/
     public function city_to()
     {
@@ -68,8 +53,7 @@ class AuthUser extends BaseApiModel
     /**
      * @name  关联区县   多对一
      * @description
-     * @author 西安咪乐多软件
-     * @date 2021/6/12 3:12
+     
      **/
     public function county_to()
     {
