@@ -1,5 +1,6 @@
 <?php
 
 return [
-    'name' => 'Students'
+    'name' => 'Students',
+    'api_key'=>123456
 ];
