@@ -2,8 +2,8 @@
 /*
  * @Author: yumiazusa
  * @Date: 2023-02-26 10:53:07
- * @LastEditTime: 2023-02-27 17:05:42
- * @LastEditors: yumiazusa
+ * @LastEditTime: 2023-03-08 18:47:45
+ * @LastEditors: yumiazusa yumiazusa@hotmail.com
  * @Description: 学生模块控制器
  * @FilePath: /www/miledo/server/Modules/Students/Http/Controllers/v1/StudentsController.php
  * yumiazusa@hotmail.com
@@ -12,6 +12,8 @@
 namespace Modules\Students\Http\Controllers\v1;
 
 use Modules\Students\Http\Requests\CommonPageRequest;
+use Modules\Students\Http\Requests\CommonStatusRequest;
+use Modules\Students\Http\Requests\StudentsCreateRequest;
 use Modules\Students\Services\students\StudentsService;
 
 class StudentsController extends BaseApiController
@@ -19,16 +21,14 @@ class StudentsController extends BaseApiController
      /**
      * @name 列表数据
      * @description
-     * @author 西安咪乐多软件
-     * @date 2021/6/14 8:33
      * @method  GET
      * @param  page Int 页码
      * @param  limit Int 每页条数
-     * @param  nickname String 昵称
      * @param  status Int 状态:0=禁用,1=启用
-     * @param  province_id Int 省ID
-     * @param  city_id Int 市ID
-     * @param  county_id Int 区县ID
+     * @param  stdid Int 学号
+     * @param  class_id Int 班级ID
+     * @param  grade_id Int 年级ID
+     * @param  project_id Int 项目ID
      * @param  sex Int 性别:0=未知,1=男，2=女
      * @param  created_at String 创建时间
      * @param  updated_at String 更新时间
@@ -39,15 +39,66 @@ class StudentsController extends BaseApiController
         return (new StudentsService())->index($request->only([
             'page',
             'limit',
-            'nickname',
+            'name',
+            'birth',
+            'sex',
+            'phone',
+            'stdid',
+            'class_id',
+            'group_id',
+            'grade_id',
+            'project_id',
             'status',
             'created_at',
             'updated_at',
-            'province_id',
-            'city_id',
-            'county_id',
-            'sex'
         ]));
+    }
+
+     /**
+     * @name 添加
+     * @description
+     * @method  POST
+     * @param  name String 姓名
+     * @param  phone String 手机号
+     * @param  password String 密码
+     * @param  password_confirmation String 确认密码
+     * @param  stdid Int 学号
+     * @param  class_id Int 班级ID
+     * @param  grade_id Int 年级ID
+     * @param  group_id Int 权限组
+     * @param  project_id Int 项目ID
+     * @param  status Int 状态:0=禁用,1=启用
+     * @param  sex Int 性别:0=未知,1=男，2=女
+     * @param  birth String 出生年月日
+     * @return JSON
+     **/
+    public function store(StudentsCreateRequest $request)
+    {
+        return (new StudentsService())->store($request->only([
+            'name',
+            'phone',
+            'password',
+            'stdid',
+            'class_id',
+            'grade_id',
+            'project_id',
+            'status',
+            'sex',
+            'birth',
+        ]));
+    }
+
+     /**
+     * @name 调整状态
+     * @description
+     * @method  PUT
+     * @param  id Int 会员id
+     * @param  status Int 状态（0或1）
+     * @return JSON
+     **/
+    public function status(CommonStatusRequest $request)
+    {
+        return (new StudentsService())->status($request->get('id'),$request->only(['status']));
     }
        
 }
