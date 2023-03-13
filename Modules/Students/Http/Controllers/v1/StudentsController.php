@@ -2,8 +2,8 @@
 /*
  * @Author: yumiazusa
  * @Date: 2023-02-26 10:53:07
- * @LastEditTime: 2023-03-08 18:47:45
- * @LastEditors: yumiazusa yumiazusa@hotmail.com
+ * @LastEditTime: 2023-03-12 23:18:32
+ * @LastEditors: yumiazusa
  * @Description: 学生模块控制器
  * @FilePath: /www/miledo/server/Modules/Students/Http/Controllers/v1/StudentsController.php
  * yumiazusa@hotmail.com
@@ -11,9 +11,11 @@
 
 namespace Modules\Students\Http\Controllers\v1;
 
+use Modules\Students\Http\Requests\CommonIdRequest;
 use Modules\Students\Http\Requests\CommonPageRequest;
 use Modules\Students\Http\Requests\CommonStatusRequest;
 use Modules\Students\Http\Requests\StudentsCreateRequest;
+use Modules\Students\Http\Requests\StudentsUpdateRequest;
 use Modules\Students\Services\students\StudentsService;
 
 class StudentsController extends BaseApiController
@@ -43,6 +45,7 @@ class StudentsController extends BaseApiController
             'birth',
             'sex',
             'phone',
+            'email',
             'stdid',
             'class_id',
             'group_id',
@@ -63,6 +66,7 @@ class StudentsController extends BaseApiController
      * @param  password String 密码
      * @param  password_confirmation String 确认密码
      * @param  stdid Int 学号
+     * @param  email String 邮箱
      * @param  class_id Int 班级ID
      * @param  grade_id Int 年级ID
      * @param  group_id Int 权限组
@@ -77,7 +81,57 @@ class StudentsController extends BaseApiController
         return (new StudentsService())->store($request->only([
             'name',
             'phone',
+            'email',
             'password',
+            'stdid',
+            'class_id',
+            'grade_id',
+            'project_id',
+            'status',
+            'sex',
+            'birth',
+        ]));
+    }
+
+     /**
+     * @name 编辑页面
+     * @description
+     * @method  GET
+     * @param  id Int 会员id
+     * @return JSON
+     **/
+    public function edit(CommonIdRequest $request)
+    {
+        return (new StudentsService())->edit($request->get('id'));
+    }
+    /**
+     * @name 编辑提交
+     * @description
+     * @author 西安咪乐多软件
+     * @date 2021/6/14 9:01
+     * @method  PUT
+     * @param  id Int 会员id
+     * @param  name String 姓名
+     * @param  phone String 手机号
+     * @param  password String 密码
+     * @param  password_confirmation String 确认密码
+     * @param  stdid Int 学号
+     * @param  email String 邮箱
+     * @param  class_id Int 班级ID
+     * @param  grade_id Int 年级ID
+     * @param  group_id Int 权限组
+     * @param  project_id Int 项目ID
+     * @param  status Int 状态:0=禁用,1=启用
+     * @param  sex Int 性别:0=未知,1=男，2=女
+     * @param  birth String 出生年月日
+     * @return JSON
+     **/
+    public function update(StudentsUpdateRequest $request)
+    {
+        return (new StudentsService())->update($request->get('id'),$request->only([
+            'name',
+            'phone',
+            'email',
             'stdid',
             'class_id',
             'grade_id',
@@ -99,6 +153,18 @@ class StudentsController extends BaseApiController
     public function status(CommonStatusRequest $request)
     {
         return (new StudentsService())->status($request->get('id'),$request->only(['status']));
+    }
+
+     /**
+     * @name 初始化密码
+     * @description
+     * @method  PUT
+     * @param  id Int 会员id
+     * @return JSON
+     **/
+    public function updatePwd(CommonIdRequest $request)
+    {
+        return (new StudentsService())->updatePwd($request->get('id'));
     }
        
 }

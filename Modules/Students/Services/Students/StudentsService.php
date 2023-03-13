@@ -2,10 +2,10 @@
 /*
  * @Author: yumiazusa
  * @Date: 2023-02-27 16:32:04
- * @LastEditTime: 2023-03-08 18:36:35
- * @LastEditors: yumiazusa yumiazusa@hotmail.com
+ * @LastEditTime: 2023-03-12 23:13:31
+ * @LastEditors: yumiazusa
  * @Description: Students的服务类
- * @FilePath: /www/miledo/server/Modules/Students/Services/students/StudentsService.php
+ * @FilePath: /www/miledo/server/Modules/Students/Services/Students/StudentsService.php
  * yumiazusa@hotmail.com
  */
 
@@ -122,6 +122,6 @@ class StudentsService extends BaseApiService
      * @return JSON
      **/
     public function updatePwd(int $id){
-        return $this->commonStatusUpdate(Students::query(),$id,['password'=>bcrypt(config('admin.update_pwd'))],'密码初始化成功！','密码初始化失败，请重试！');
+        return $this->commonStatusUpdate(Students::query(),$id,['password'=>bcrypt(config('students.update_pwd'))],'密码初始化成功！','密码初始化失败，请重试！');
     }
 }

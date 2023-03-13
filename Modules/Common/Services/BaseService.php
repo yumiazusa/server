@@ -1,21 +1,12 @@
 <?php
-// +----------------------------------------------------------------------
-// | Name: 咪乐多管理系统 [ 为了快速搭建软件应用而生的，希望能够帮助到大家提高开发效率。 ]
-// +----------------------------------------------------------------------
-// | Copyright: (c) 2020~2021 https://www.lvacms.cn All rights reserved.
-// +----------------------------------------------------------------------
-// | Licensed: 这是一个自由软件，允许对程序代码进行修改，但希望您留下原有的注释。
-// +----------------------------------------------------------------------
-// | Author: 西安咪乐多软件 <997786358@qq.com>
-// +----------------------------------------------------------------------
-// | Version: V1
-// +----------------------------------------------------------------------
-
-/**
- * @Name  服务基类
- * @Description
- * @Auther 西安咪乐多软件
- * @Date 2021/6/11 12:30
+/*
+ * @Author: yumiazusa
+ * @Date: 2022-12-08 10:24:52
+ * @LastEditTime: 2023-03-12 22:40:42
+ * @LastEditors: yumiazusa
+ * @Description: 服务基类
+ * @FilePath: /www/miledo/server/Modules/Common/Services/BaseService.php
+ * yumiazusa@hotmail.com
  */
 
 namespace Modules\Common\Services;
@@ -35,8 +26,6 @@ class BaseService
     /**
      * @name 查询条件
      * @description
-     * @author 西安咪乐多软件
-     * @date 2021/6/12 2:59
      * @method  GET
      * @param model Model 模型
      * @param params Array 查询参数
@@ -62,8 +51,6 @@ class BaseService
     /**
      * @name  成功返回
      * @description  用于所有的接口返回
-     * @author 西安咪乐多软件
-     * @date 2021/6/11 12:32
      * @param status Int 自定义状态码
      * @param message String 提示信息
      * @param data Array 返回信息
@@ -83,8 +70,6 @@ class BaseService
     /**
      * @name 失败返回
      * @description 用于所有的接口返回
-     * @author 西安咪乐多软件
-     * @date 2021/6/11 12:36
      * @param status Int 自定义状态码
      * @param message String 提示信息
      * @return JSON
@@ -98,8 +83,6 @@ class BaseService
     /**
      * @name 添加公共方法
      * @description
-     * @author 西安咪乐多软件
-     * @date 2021/6/11 12:54
      * @param model Model  当前模型
      * @param data array 添加数据
      * @param successMessage string 成功返回数据
@@ -116,8 +99,6 @@ class BaseService
     /**
      * @name 编辑公共方法
      * @description
-     * @author 西安咪乐多软件
-     * @date 2021/6/11 13:17
      * @param model Model  当前模型
      * @param id   Int  修改id
      * @param data array 添加数据
@@ -135,8 +116,6 @@ class BaseService
     /**
      * @name 调整公共方法
      * @description
-     * @author 西安咪乐多软件
-     * @date 2021/6/11 13:31
      * @param model Model  当前模型
      * @param id   Int  修改id
      * @param data array 添加数据
@@ -153,8 +132,6 @@ class BaseService
     /**
      * @name 排序公共方法
      * @description
-     * @author 西安咪乐多软件
-     * @date 2021/6/11 13:31
      * @param model Model  当前模型
      * @param id   Int  修改id
      * @param data array 添加数据
