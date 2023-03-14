@@ -2,8 +2,8 @@
 /*
  * @Author: yumiazusa
  * @Date: 2023-02-26 10:53:07
- * @LastEditTime: 2023-03-14 16:24:59
- * @LastEditors: yumiazusa yumiazusa@hotmail.com
+ * @LastEditTime: 2023-03-14 23:41:30
+ * @LastEditors: yumiazusa
  * @Description: 学生模块控制器
  * @FilePath: /www/miledo/server/Modules/Students/Http/Controllers/v1/StudentsController.php
  * yumiazusa@hotmail.com
@@ -14,9 +14,11 @@ namespace Modules\Students\Http\Controllers\v1;
 use Modules\Students\Http\Requests\CommonIdRequest;
 use Modules\Students\Http\Requests\CommonPageRequest;
 use Modules\Students\Http\Requests\CommonStatusRequest;
+use Modules\Students\Http\Requests\PwdRequest;
 use Modules\Students\Http\Requests\StudentsCreateRequest;
 use Modules\Students\Http\Requests\StudentsUpdateRequest;
 use Modules\Students\Services\Students\StudentsService;
+use Modules\Students\Services\Students\UpdatePasswordService;
 
 class StudentsController extends BaseApiController
 {
@@ -153,6 +155,20 @@ class StudentsController extends BaseApiController
     public function status(CommonStatusRequest $request)
     {
         return (new StudentsService())->status($request->get('id'),$request->only(['status']));
+    }
+
+    /**
+     * @name 修改会员密码
+     * @description
+     * @method  PUT
+     * @param  y_password String 原密码
+     * @param  password String 密码
+     * @param  password_confirmation String 确认密码
+     * @return JSON
+     **/
+    public function changePwd(PwdRequest $request)
+    {
+        return (new UpdatePasswordService())->upadtePwd($request->only(['id','y_password','password']));
     }
 
      /**

@@ -2,14 +2,14 @@
 /*
  * @Author: yumiazusa
  * @Date: 2023-02-27 16:32:04
- * @LastEditTime: 2023-03-12 23:13:31
+ * @LastEditTime: 2023-03-14 23:28:36
  * @LastEditors: yumiazusa
  * @Description: Students的服务类
  * @FilePath: /www/miledo/server/Modules/Students/Services/Students/StudentsService.php
  * yumiazusa@hotmail.com
  */
 
-namespace Modules\Students\Services\students;
+namespace Modules\Students\Services\Students;
 
 
 use Modules\Students\Entities\Students;
