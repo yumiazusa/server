@@ -2,7 +2,7 @@
 /*
  * @Author: yumiazusa
  * @Date: 2023-02-26 10:53:07
- * @LastEditTime: 2023-03-14 16:14:12
+ * @LastEditTime: 2023-03-14 16:24:59
  * @LastEditors: yumiazusa yumiazusa@hotmail.com
  * @Description: 学生模块控制器
  * @FilePath: /www/miledo/server/Modules/Students/Http/Controllers/v1/StudentsController.php
@@ -16,7 +16,7 @@ use Modules\Students\Http\Requests\CommonPageRequest;
 use Modules\Students\Http\Requests\CommonStatusRequest;
 use Modules\Students\Http\Requests\StudentsCreateRequest;
 use Modules\Students\Http\Requests\StudentsUpdateRequest;
-use Modules\Students\Services\students\StudentsService;
+use Modules\Students\Services\Students\StudentsService;
 
 class StudentsController extends BaseApiController
 {
