@@ -2,8 +2,8 @@
 /*
  * @Author: yumiazusa
  * @Date: 2023-02-26 10:53:07
- * @LastEditTime: 2023-03-12 23:18:32
- * @LastEditors: yumiazusa
+ * @LastEditTime: 2023-03-14 16:03:22
+ * @LastEditors: yumiazusa yumiazusa@hotmail.com
  * @Description: 学生模块控制器
  * @FilePath: /www/miledo/server/Modules/Students/Http/Controllers/v1/StudentsController.php
  * yumiazusa@hotmail.com
@@ -37,24 +37,25 @@ class StudentsController extends BaseApiController
      * @return JSON
      **/
     public function index(CommonPageRequest $request)
-    {
-        return (new StudentsService())->index($request->only([
-            'page',
-            'limit',
-            'name',
-            'birth',
-            'sex',
-            'phone',
-            'email',
-            'stdid',
-            'class_id',
-            'group_id',
-            'grade_id',
-            'project_id',
-            'status',
-            'created_at',
-            'updated_at',
-        ]));
+    {   
+        dd('ok');
+        // return (new StudentsService())->index($request->only([
+        //     'page',
+        //     'limit',
+        //     'name',
+        //     'birth',
+        //     'sex',
+        //     'phone',
+        //     'email',
+        //     'stdid',
+        //     'class_id',
+        //     'group_id',
+        //     'grade_id',
+        //     'project_id',
+        //     'status',
+        //     'created_at',
+        //     'updated_at',
+        // ]));
     }
 
      /**
