@@ -2,7 +2,7 @@
 /*
  * @Author: yumiazusa
  * @Date: 2023-03-14 23:27:04
- * @LastEditTime: 2023-03-14 23:49:48
+ * @LastEditTime: 2023-03-17 11:23:39
  * @LastEditors: yumiazusa
  * @Description: 管理员修改密码服务
  * @FilePath: /www/miledo/server/Modules/Students/Services/Students/UpdatePasswordService.php
@@ -27,10 +27,8 @@ class UpdatePasswordService extends BaseApiService
      * @return JSON
      **/
     public function upadtePwd(array $data){
-        dd($data);
-        $userInfo = (new TokenService())->my();
-        if (true == \Auth::guard('auth_admin')->attempt(['id'=>$userInfo['username'],'password'=>$data['y_password']])) {
-            if(Students::where('id',$userInfo['id'])->update(['password'=>bcrypt($data['password'])])){
+        if (password_verify($data['y_password'], Students::where('id',$data['id'])->value('password'))) {
+            if(Students::where('id',$data['id'])->update(['password'=>bcrypt($data['password'])])){
                 return $this->apiSuccess('修改成功！');
             }
             $this->apiError('修改失败！');
