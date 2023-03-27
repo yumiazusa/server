@@ -2,9 +2,9 @@
 /*
  * @Author: yumiazusa yumiazusa@hotmail.com
  * @Date: 2023-03-21 13:30:59
- * @LastEditors: yumiazusa yumiazusa@hotmail.com
- * @LastEditTime: 2023-03-23 18:41:30
- * @FilePath: /www/miledo/server/Modules/Students/Services/colloge/CollegeService.php
+ * @LastEditors: yumiazusa
+ * @LastEditTime: 2023-03-26 23:22:09
+ * @FilePath: /www/miledo/server/Modules/Students/Services/college/CollegeService.php
  * @Description: 学院年级班级管理服务
  */
 
@@ -27,14 +27,14 @@ class CollegeService extends BaseApiService
      * @return JSON
      **/
     public function index(){
-        $model = College::query();
-        $list = $model ->category();
-        dd($list);
-        $list = $model->orderBy('sort','asc')
-            ->orderBy('id','desc')
-            ->get()
-            ->toArray();
-        return $this->apiSuccess('',$this->tree($list));
+        $model = College::join('class_attribution as attr','attr.class_id','=','class.id')
+                ->join('college','college.id','=','attr.college_id')
+                ->join('grade','grade.id','=','attr.grade_id')
+                ->join('department','department.id','=','attr.department_id')
+                ->join('level','level.id','=','attr.level_id')
+                ->select('class.*','college.college','grade.grade','department.department','level.level')
+                ->get()->toArray();
+        dd($model);
     }
 
 

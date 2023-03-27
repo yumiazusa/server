@@ -2,7 +2,7 @@
 /*
  * @Author: yumiazusa
  * @Date: 2022-12-08 10:24:52
- * @LastEditTime: 2023-03-12 22:40:42
+ * @LastEditTime: 2023-03-26 07:28:47
  * @LastEditors: yumiazusa
  * @Description: 服务基类
  * @FilePath: /www/miledo/server/Modules/Common/Services/BaseService.php
@@ -400,6 +400,29 @@ class BaseService
         }
         return $tree;
     }
+
+     /**
+     * @name 递归处理category数据
+     * @description
+     * @param array Array  总数据
+     * @param pid Int  父级id
+     * @return Array
+     **/
+    public function categoryTree(array $array,int $pid=0):Array
+    {
+        $tree = array();
+        foreach ($array as $key => $value) {
+            if ($value['pid'] == $pid) {
+                $value['children'] = $this->tree($array, $value['id']);
+                if (!$value['children']) {
+                    unset($value['children']);
+                }
+                $tree[] = $value;
+            }
+        }
+        return $tree;
+    }
+
     /**
      * @name 获取用户真实 ip
      * @description

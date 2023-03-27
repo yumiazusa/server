@@ -2,8 +2,8 @@
 /*
  * @Author: yumiazusa
  * @Date: 2023-02-27 16:35:05
- * @LastEditTime: 2023-03-23 18:40:37
- * @LastEditors: yumiazusa yumiazusa@hotmail.com
+ * @LastEditTime: 2023-03-26 17:07:38
+ * @LastEditors: yumiazusa
  * @Description: College模型
  * @FilePath: /www/miledo/server/Modules/Students/Entities/College.php
  * yumiazusa@hotmail.com
@@ -26,16 +26,16 @@ class College extends BaseApiModel
         return $value?$value:'';
     }
 
-    protected $table = 'college';
+    protected $table = 'class';
 
      /**
 	 * @name 关联College Category
 	 * @description
 	 * @return JSON
 	 **/
-    public function category()
+    public function classAttribution()
     {
-        return $this->belongsTo('Modules\Students\Entities\CollegeCategory','admin_id','id');
+        return $this->hasOne('Modules\Students\Entities\ClassAttribution','class_id','id');
     }
     
 
