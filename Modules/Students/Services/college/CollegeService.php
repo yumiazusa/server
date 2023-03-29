@@ -2,8 +2,8 @@
 /*
  * @Author: yumiazusa yumiazusa@hotmail.com
  * @Date: 2023-03-21 13:30:59
- * @LastEditors: yumiazusa
- * @LastEditTime: 2023-03-28 23:38:25
+ * @LastEditors: yumiazusa yumiazusa@hotmail.com
+ * @LastEditTime: 2023-03-29 13:04:17
  * @FilePath: /www/miledo/server/Modules/Students/Services/college/CollegeService.php
  * @Description: 学院年级班级管理服务
  */
@@ -27,20 +27,32 @@ class CollegeService extends BaseApiService
      * @return JSON
      **/
     public function index(){
-        $model = College::join('class_attribution as attr','attr.class_id','=','class.id')
+        $list = College::join('class_attribution as attr','attr.class_id','=','class.id')
                 ->join('college','college.id','=','attr.college_id')
                 ->join('grade','grade.id','=','attr.grade_id')
                 ->join('department','department.id','=','attr.department_id')
                 ->join('level','level.id','=','attr.level_id')
-                ->select('class.*','college.college','grade.grade','department.department','level.level')
+                ->select('class.*','college.college','grade.grade','department.department','level.level','attr.college_id')
+                ->groupBy('college。sort')
                 ->orderBy('college.sort','asc')
                 ->orderBy('grade.sort','desc')
                 ->orderBy('department.sort','asc')
                 ->orderBy('level.sort','asc')
+               
                 ->get()->toArray();
-                // http://www.qb5200.com/article/268948.html
-                // https://www.douban.com/note/588332910/?_i=001491807qWaSM
-        dd($model);
+                $temarray = array();
+                $j=1;
+                // dd(count($list));
+                // for($i=0;$i<count($list)-1;$i++){
+                //     if($list[$i]['college'] == $list[$j]['college']){
+                //         $temarray[$i]['college']=$list[$i]['college'];
+                //     }else{
+                //         $temarray[$i]['college']=$list[$j]['college'];
+                //     };
+                //     $j++;
+                // };
+        // dd($temarray);
+        dd($list);
     }
 
 
