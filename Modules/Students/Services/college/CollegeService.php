@@ -2,8 +2,8 @@
 /*
  * @Author: yumiazusa yumiazusa@hotmail.com
  * @Date: 2023-03-21 13:30:59
- * @LastEditors: yumiazusa yumiazusa@hotmail.com
- * @LastEditTime: 2023-03-29 13:04:17
+ * @LastEditors: yumiazusa
+ * @LastEditTime: 2023-03-29 21:31:34
  * @FilePath: /www/miledo/server/Modules/Students/Services/college/CollegeService.php
  * @Description: 学院年级班级管理服务
  */
@@ -33,7 +33,7 @@ class CollegeService extends BaseApiService
                 ->join('department','department.id','=','attr.department_id')
                 ->join('level','level.id','=','attr.level_id')
                 ->select('class.*','college.college','grade.grade','department.department','level.level','attr.college_id')
-                ->groupBy('college。sort')
+                ->groupBy('college.id')
                 ->orderBy('college.sort','asc')
                 ->orderBy('grade.sort','desc')
                 ->orderBy('department.sort','asc')

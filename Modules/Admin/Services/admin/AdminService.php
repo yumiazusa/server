@@ -63,6 +63,8 @@ class AdminService extends BaseApiService
             ->orderBy('id','desc')
             ->paginate($data['limit'])
             ->toArray();
+            // sql-mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION
+            // sql-mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES
         return $this->apiSuccess('',[
             'list'=>$list['data'],
             'total'=>$list['total']
