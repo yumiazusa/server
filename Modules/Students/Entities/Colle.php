@@ -2,7 +2,7 @@
 /*
  * @Author: yumiazusa
  * @Date: 2023-02-27 16:35:05
- * @LastEditTime: 2023-04-07 11:13:33
+ * @LastEditTime: 2023-04-07 15:27:38
  * @LastEditors: yumiazusa yumiazusa@hotmail.com
  * @Description: College模型
  * @FilePath: /www/miledo/server/Modules/Students/Entities/College.php
@@ -13,7 +13,7 @@ namespace Modules\Students\Entities;
 
 
 
-class College extends BaseApiModel
+class Colle extends BaseApiModel
 {
    /**
      * @name 更新时间为null时返回
@@ -26,18 +26,7 @@ class College extends BaseApiModel
         return $value?$value:'';
     }
 
-    // protected $table = 'college';
-    protected $table = 'class';
-
-     /**
-	 * @name 关联College Category
-	 * @description
-	 * @return JSON
-	 **/
-    public function collegeAttr()
-    {
-        return $this->hasMany('Modules\Students\Entities\ClassAttribution','college_id','id');
-    }
+    protected $table = 'college';
     
 
 }

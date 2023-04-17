@@ -2,20 +2,22 @@
 /*
  * @Author: yumiazusa yumiazusa@hotmail.com
  * @Date: 2023-03-21 13:30:59
- * @LastEditors: yumiazusa
- * @LastEditTime: 2023-03-29 21:31:34
- * @FilePath: /www/miledo/server/Modules/Students/Services/college/CollegeService.php
+ * @LastEditors: yumiazusa yumiazusa@hotmail.com
+ * @LastEditTime: 2023-04-07 15:30:44
+ * @FilePath: /www/miledo/server/Modules/Students/Services/College/CollegeService.php
  * @Description: 学院年级班级管理服务
  */
 
 
-namespace Modules\Students\Services\college;
+namespace Modules\Students\Services\College;
 
 
-// use Modules\Admin\Models\AuthGroup;
-// use Modules\Admin\Models\AuthRule;
 
 use Modules\Students\Entities\College;
+use Modules\Students\Entities\Colle;
+use Modules\Students\Entities\Department;
+use Modules\Students\Entities\Grade;
+use Modules\Students\Entities\Level;
 use Modules\Students\Services\BaseApiService;
 
 class CollegeService extends BaseApiService
@@ -26,96 +28,94 @@ class CollegeService extends BaseApiService
      * @description
      * @return JSON
      **/
-    public function index(){
-        $list = College::join('class_attribution as attr','attr.class_id','=','class.id')
-                ->join('college','college.id','=','attr.college_id')
-                ->join('grade','grade.id','=','attr.grade_id')
-                ->join('department','department.id','=','attr.department_id')
-                ->join('level','level.id','=','attr.level_id')
-                ->select('class.*','college.college','grade.grade','department.department','level.level','attr.college_id')
-                ->groupBy('college.id')
-                ->orderBy('college.sort','asc')
-                ->orderBy('grade.sort','desc')
-                ->orderBy('department.sort','asc')
-                ->orderBy('level.sort','asc')
-               
-                ->get()->toArray();
-                $temarray = array();
-                $j=1;
-                // dd(count($list));
-                // for($i=0;$i<count($list)-1;$i++){
-                //     if($list[$i]['college'] == $list[$j]['college']){
-                //         $temarray[$i]['college']=$list[$i]['college'];
-                //     }else{
-                //         $temarray[$i]['college']=$list[$j]['college'];
-                //     };
-                //     $j++;
-                // };
-        // dd($temarray);
-        dd($list);
+    public function index()
+    {
+        // $list = College::join('class_attribution as attr', 'attr.class_id', '=', 'class.id')
+        //     ->join('College', 'College.id', '=', 'attr.College_id')
+        //     ->join('grade', 'grade.id', '=', 'attr.grade_id')
+        //     ->join('department', 'department.id', '=', 'attr.department_id')
+        //     ->join('level', 'level.id', '=', 'attr.level_id')
+        //     ->select('class.id', 'class.name', 'College.id as College_id', 'grade.grade', 'department.department', 'level.level')
+        //     ->orderBy('College.sort', 'asc')
+        //     ->orderBy('grade.sort', 'desc')
+        //     ->orderBy('department.sort', 'asc')
+        //     ->orderBy('level.sort', 'asc')
+        //     ->get()->toArray();
+        $list = College::join('class_attribution as attr', 'attr.class_id', '=', 'class.id')
+            ->join('college', 'college.id', '=', 'attr.college_id')
+            ->join('grade', 'grade.id', '=', 'attr.grade_id')
+            ->join('department', 'department.id', '=', 'attr.department_id')
+            ->join('level', 'level.id', '=', 'attr.level_id')
+            ->select('class.id','class.name','class.status','attr.*')
+            ->orderBy('college.sort', 'asc')
+            ->orderBy('grade.sort', 'desc')
+            ->orderBy('department.sort', 'asc')
+            ->orderBy('level.sort', 'asc')
+            ->get()->toArray();
+        $treeList = $this->dealList($list);
+        $college = Colle::get()->toArray();
+        $grade = Grade::get()->toArray();
+        $department = Department::get()->toArray();
+        $level = Level::get()->toArray();
+        return $this->apiSuccess('',[$college,$grade,$department,$level,$treeList]);
     }
 
+    /**
+     * @name 转换班级数组方法
+     * @param  $data Array 班级一维数组
+     * @return Array
+     **/
+    public function dealList($data)
+    {
+        $newArray = [];
+        foreach ($data as $item) {
+            $college = $item['college_id'];
+            $grade = $item['grade_id'];
+            $department = $item['department_id'];
+            $level = $item['level_id'];
+            $name = $item['name'];
+            $id = $item['id'];
+            $status = $item['status'];
 
+            if (!isset($newArray[$college])) {
+                $newArray[$college] = [];
+            }
 
+            if (!isset($newArray[$college][$grade])) {
+                $newArray[$college][$grade] = [];
+            }
 
+            if (!isset($newArray[$college][$grade][$department])) {
+                $newArray[$college][$grade][$department] = [];
+            }
 
+            if (!isset($newArray[$college][$grade][$department][$level])) {
+                $newArray[$college][$grade][$department][$level] = [];
+            }
 
+            $count = count($newArray[$college][$grade][$department][$level]);
+            $newArray[$college][$grade][$department][$level]['class'][$count + 1] = [
+                'id' => $id,
+                'name' => $name,
+                'status' => $status,
+            ];
+        }
+        return [$newArray];
+    }
 
-
-    // /**
-    //  * @name 添加
-    //  * @description
-    //  * @author 西安咪乐多软件
-    //  * @date 2021/6/12 3:29
-    //  * @method  POST
-    //  * @param  data Array 添加数据
-    //  * @param  data.pid Int 父级ID
-    //  * @param  data.path String 标识
-    //  * @param  data.url String 路由文件
-    //  * @param  data.redirect String 重定向路径
-    //  * @param  data.name String 权限名称
-    //  * @param  data.type Int 菜单类型:1=模块,2=目录,3=菜单
-    //  * @param  data.status Int 侧边栏显示状态:0=隐藏,1=显示
-    //  * @param  data.auth_open Int 是否验证权限:0=否,1=是
-    //  * @param  data.level Int 级别
-    //  * @param  data.affix Int 是否固定面板:0=否,1=是
-    //  * @param  data.icon String 图标名称
-    //  * @param  data.sort Int 排序
-    //  * @return JSON
-    //  **/
-    // public function store(array $data)
-    // {
-    //     return $this->commonCreate(AuthRule::query(),$data);
-    // }
-    // /**
-    //  * @name 修改页面
-    //  * @description
-    //  * @author 西安咪乐多软件
-    //  * @date 2021/6/14 9:51
-    //  * @param  id Int 菜单id
-    //  * @return JSON
-    //  **/
-    // public function edit(int $id){
-    //     $data = AuthRule::find($id)->toArray();
-    //     if($data['pid'] != 0){
-    //         $data['value'] = $this->superiorArrId($data['pid']);
-    //     }else{
-    //         $data['value'] = [];
-    //     }
-    //     return $this->apiSuccess('',$data);
-    // }
     /**
      * @name 添加子级返回父级id
      * @description
      * @param  pid Int 父级id
      * @return JSON
      **/
-    public function pidArr(int $pid){
+    public function pidArr(int $pid)
+    {
         $value = [];
-        if($pid != 0){
+        if ($pid != 0) {
             $value = $this->superiorArrId($pid);
         }
-        return $this->apiSuccess('',$value);
+        return $this->apiSuccess('', $value);
     }
     /**
      * @name 获取菜单id
@@ -125,10 +125,10 @@ class CollegeService extends BaseApiService
      * @param pid Int 父级id
      * @return Array
      **/
-    private function superiorArrId(int $pid):Array
+    private function superiorArrId(int $pid): array
     {
-        $list = College::select('id','pid')->orderBy('id','asc')->get()->toArray();
-        return array_reverse($this->superiorArrIdSort($list,$pid));
+        $list = College::select('id', 'pid')->orderBy('id', 'asc')->get()->toArray();
+        return array_reverse($this->superiorArrIdSort($list, $pid));
     }
     /**
      * @name 递归遍历数据
@@ -139,15 +139,15 @@ class CollegeService extends BaseApiService
      * @param list Array 权限信息
      * @return Array 返回获取当前的删除id的其他子id
      **/
-    private function superiorArrIdSort(array $list,int $pid):Array
+    private function superiorArrIdSort(array $list, int $pid): array
     {
         //创建新数组
-        static $arr=array();
-        foreach($list as $k=>$v){
-            if($v['id'] == $pid){
+        static $arr = array();
+        foreach ($list as $k => $v) {
+            if ($v['id'] == $pid) {
                 $arr[] = $v['id'];
                 unset($list[$k]);
-                $this->superiorArrIdSort($list,$v['pid']);
+                $this->superiorArrIdSort($list, $v['pid']);
             }
         }
         return $arr;
@@ -199,8 +199,9 @@ class CollegeService extends BaseApiService
      * @param  data.status Int 状态（0或1）
      * @return JSON
      **/
-    public function sorts(int $id,array $data){
-        return $this->commonSortsUpdate(College::query(),$id,$data);
+    public function sorts(int $id, array $data)
+    {
+        return $this->commonSortsUpdate(College::query(), $id, $data);
     }
     // /**
     //  * @name 是否验证权限
@@ -248,32 +249,32 @@ class CollegeService extends BaseApiService
      * @param id Int 当前删除数据id
      * @return Array
      **/
-    private function ids(int $id):Array
+    private function ids(int $id): array
     {
-        $college = College::select('id','pid')->get()->toArray();
-        $arr = $this->delSort($college,$id);
+        $College = College::select('id', 'pid')->get()->toArray();
+        $arr = $this->delSort($College, $id);
         $arr[] = $id;
         return $arr;
     }
-    
+
     /**
      * @name 递归遍历数据
      * @description
      * @author 西安咪乐多软件
      * @date 2021/6/14 10:13
      * @param id Int 当前删除数据id
-     * @param college Array 学院年级班级信息
+     * @param College Array 学院年级班级信息
      * @return Array 返回获取当前的删除id的其他子id
      **/
-    public function delSort(array $college,int $id):Array
+    public function delSort(array $College, int $id): array
     {
         //创建新数组
-        static $arr=array();
-        foreach($college as $k=>$v){
-            if($v['pid'] == $id){
+        static $arr = array();
+        foreach ($College as $k => $v) {
+            if ($v['pid'] == $id) {
                 $arr[] = $v['id'];
-                unset($college[$k]);
-                $this->delSort($college,$v['id']);
+                unset($College[$k]);
+                $this->delSort($College, $v['id']);
             }
         }
         return $arr;

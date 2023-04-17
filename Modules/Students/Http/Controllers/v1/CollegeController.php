@@ -2,7 +2,7 @@
 /*
  * @Author: yumiazusa
  * @Date: 2023-02-26 10:53:07
- * @LastEditTime: 2023-03-21 14:13:38
+ * @LastEditTime: 2023-04-07 12:16:31
  * @LastEditors: yumiazusa yumiazusa@hotmail.com
  * @Description: 学院年级班级模块控制器
  * @FilePath: /www/miledo/server/Modules/Students/Http/Controllers/v1/StudentsController.php
@@ -11,7 +11,7 @@
 
 namespace Modules\Students\Http\Controllers\v1;
 
-use Modules\Students\Services\college\CollegeService;
+use Modules\Students\Services\College\CollegeService;
 
 class CollegeController extends BaseApiController
 {
