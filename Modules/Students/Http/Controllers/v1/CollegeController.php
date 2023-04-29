@@ -2,7 +2,7 @@
 /*
  * @Author: yumiazusa
  * @Date: 2023-02-26 10:53:07
- * @LastEditTime: 2023-04-07 12:16:31
+ * @LastEditTime: 2023-04-26 23:02:40
  * @LastEditors: yumiazusa yumiazusa@hotmail.com
  * @Description: 学院年级班级模块控制器
  * @FilePath: /www/miledo/server/Modules/Students/Http/Controllers/v1/StudentsController.php
@@ -11,6 +11,8 @@
 
 namespace Modules\Students\Http\Controllers\v1;
 
+use Modules\Students\Http\Requests\CollegeCreateRequest;
+use Modules\Students\Http\Requests\CollegeUpdateRequest;
 use Modules\Students\Services\College\CollegeService;
 
 class CollegeController extends BaseApiController
@@ -36,41 +38,31 @@ class CollegeController extends BaseApiController
         return (new CollegeService())->index();
     }
 
-    //  /**
-    //  * @name 添加
-    //  * @description
-    //  * @method  POST
-    //  * @param  name String 姓名
-    //  * @param  phone String 手机号
-    //  * @param  password String 密码
-    //  * @param  password_confirmation String 确认密码
-    //  * @param  stdid Int 学号
-    //  * @param  email String 邮箱
-    //  * @param  class_id Int 班级ID
-    //  * @param  grade_id Int 年级ID
-    //  * @param  group_id Int 权限组
-    //  * @param  project_id Int 项目ID
-    //  * @param  status Int 状态:0=禁用,1=启用
-    //  * @param  sex Int 性别:0=未知,1=男，2=女
-    //  * @param  birth String 出生年月日
-    //  * @return JSON
-    //  **/
-    // public function store(StudentsCreateRequest $request)
-    // {
-    //     return (new StudentsService())->store($request->only([
-    //         'name',
-    //         'phone',
-    //         'email',
-    //         'password',
-    //         'stdid',
-    //         'class_id',
-    //         'grade_id',
-    //         'project_id',
-    //         'status',
-    //         'sex',
-    //         'birth',
-    //     ]));
-    // }
+     /**
+     * @name 添加
+     * @description
+     * @method  POST
+     * @param  name String 姓名
+     * @param  phone String 手机号
+     * @param  password String 密码
+     * @param  password_confirmation String 确认密码
+     * @param  stdid Int 学号
+     * @param  email String 邮箱
+     * @param  class_id Int 班级ID
+     * @param  grade_id Int 年级ID
+     * @param  group_id Int 权限组
+     * @param  project_id Int 项目ID
+     * @param  status Int 状态:0=禁用,1=启用
+     * @param  sex Int 性别:0=未知,1=男，2=女
+     * @param  birth String 出生年月日
+     * @return JSON
+     **/
+    public function store(CollegeCreateRequest $request)
+    {
+        return (new CollegeService())->store($request->only([
+            'college',
+        ]));
+    }
 
     //  /**
     //  * @name 编辑页面
@@ -83,43 +75,30 @@ class CollegeController extends BaseApiController
     // {
     //     return (new StudentsService())->edit($request->get('id'));
     // }
-    // /**
-    //  * @name 编辑提交
-    //  * @description
-    //  * @author 西安咪乐多软件
-    //  * @date 2021/6/14 9:01
-    //  * @method  PUT
-    //  * @param  id Int 会员id
-    //  * @param  name String 姓名
-    //  * @param  phone String 手机号
-    //  * @param  password String 密码
-    //  * @param  password_confirmation String 确认密码
-    //  * @param  stdid Int 学号
-    //  * @param  email String 邮箱
-    //  * @param  class_id Int 班级ID
-    //  * @param  grade_id Int 年级ID
-    //  * @param  group_id Int 权限组
-    //  * @param  project_id Int 项目ID
-    //  * @param  status Int 状态:0=禁用,1=启用
-    //  * @param  sex Int 性别:0=未知,1=男，2=女
-    //  * @param  birth String 出生年月日
-    //  * @return JSON
-    //  **/
-    // public function update(StudentsUpdateRequest $request)
-    // {
-    //     return (new StudentsService())->update($request->get('id'),$request->only([
-    //         'name',
-    //         'phone',
-    //         'email',
-    //         'stdid',
-    //         'class_id',
-    //         'grade_id',
-    //         'project_id',
-    //         'status',
-    //         'sex',
-    //         'birth',
-    //     ]));
-    // }
+    /**
+     * @name 编辑提交
+     * @description
+     * @method  PUT
+     * @param  type string 提交类型
+     * @param  title String 类型名称
+     * @return JSON
+     **/
+    public function update(CollegeUpdateRequest $request)
+    {
+        return $request;
+        // return (new StudentsService())->update($request->get('id'),$request->only([
+        //     'name',
+        //     'phone',
+        //     'email',
+        //     'stdid',
+        //     'class_id',
+        //     'grade_id',
+        //     'project_id',
+        //     'status',
+        //     'sex',
+        //     'birth',
+        // ]));
+    }
 
     //  /**
     //  * @name 调整状态

@@ -2,8 +2,8 @@
 /*
  * @Author: yumiazusa
  * @Date: 2023-02-27 16:32:04
- * @LastEditTime: 2023-03-14 23:28:36
- * @LastEditors: yumiazusa
+ * @LastEditTime: 2023-04-18 14:09:47
+ * @LastEditors: yumiazusa yumiazusa@hotmail.com
  * @Description: Students的服务类
  * @FilePath: /www/miledo/server/Modules/Students/Services/Students/StudentsService.php
  * yumiazusa@hotmail.com
@@ -109,8 +109,8 @@ class StudentsService extends BaseApiService
      * @description
      * @param  data Array 调整数据
      * @param  id Int 会员id
-     * @param  data.status Int 状态（0或1）
      * @return JSON
+     * @param  data.status Int 状态（0或1）
      **/
     public function status(int $id,array $data){
         return $this->commonStatusUpdate(Students::query(),$id,$data);

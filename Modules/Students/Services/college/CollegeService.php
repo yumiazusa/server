@@ -3,7 +3,7 @@
  * @Author: yumiazusa yumiazusa@hotmail.com
  * @Date: 2023-03-21 13:30:59
  * @LastEditors: yumiazusa yumiazusa@hotmail.com
- * @LastEditTime: 2023-04-07 15:30:44
+ * @LastEditTime: 2023-04-23 14:31:13
  * @FilePath: /www/miledo/server/Modules/Students/Services/College/CollegeService.php
  * @Description: 学院年级班级管理服务
  */
@@ -30,23 +30,12 @@ class CollegeService extends BaseApiService
      **/
     public function index()
     {
-        // $list = College::join('class_attribution as attr', 'attr.class_id', '=', 'class.id')
-        //     ->join('College', 'College.id', '=', 'attr.College_id')
-        //     ->join('grade', 'grade.id', '=', 'attr.grade_id')
-        //     ->join('department', 'department.id', '=', 'attr.department_id')
-        //     ->join('level', 'level.id', '=', 'attr.level_id')
-        //     ->select('class.id', 'class.name', 'College.id as College_id', 'grade.grade', 'department.department', 'level.level')
-        //     ->orderBy('College.sort', 'asc')
-        //     ->orderBy('grade.sort', 'desc')
-        //     ->orderBy('department.sort', 'asc')
-        //     ->orderBy('level.sort', 'asc')
-        //     ->get()->toArray();
         $list = College::join('class_attribution as attr', 'attr.class_id', '=', 'class.id')
             ->join('college', 'college.id', '=', 'attr.college_id')
             ->join('grade', 'grade.id', '=', 'attr.grade_id')
             ->join('department', 'department.id', '=', 'attr.department_id')
             ->join('level', 'level.id', '=', 'attr.level_id')
-            ->select('class.id','class.name','class.status','attr.*')
+            ->select('class.id as class_id', 'class.name as class', 'class.status', 'class.sort','class.affix','college.college', 'college.sort as college_sort', 'department.department', 'department.sort as dep_sort','grade.grade','grade.sort as grade_sort', 'level.level', 'level.sort as level_sort')
             ->orderBy('college.sort', 'asc')
             ->orderBy('grade.sort', 'desc')
             ->orderBy('department.sort', 'asc')
@@ -57,7 +46,7 @@ class CollegeService extends BaseApiService
         $grade = Grade::get()->toArray();
         $department = Department::get()->toArray();
         $level = Level::get()->toArray();
-        return $this->apiSuccess('',[$college,$grade,$department,$level,$treeList]);
+        return $this->apiSuccess('', [$college, $grade, $department, $level, $treeList]);
     }
 
     /**
@@ -65,43 +54,173 @@ class CollegeService extends BaseApiService
      * @param  $data Array 班级一维数组
      * @return Array
      **/
-    public function dealList($data)
+    public function dealList($arr)
     {
-        $newArray = [];
-        foreach ($data as $item) {
-            $college = $item['college_id'];
-            $grade = $item['grade_id'];
-            $department = $item['department_id'];
-            $level = $item['level_id'];
-            $name = $item['name'];
-            $id = $item['id'];
-            $status = $item['status'];
-
-            if (!isset($newArray[$college])) {
-                $newArray[$college] = [];
+        $result = array();
+        foreach ($arr as $item) {
+            $collegeTitle = $item["college"];
+            $collegeSrot = $item["college_sort"];
+            $gradeTitle = $item["grade"];
+            $gradeSort = $item["grade_sort"];
+            $departmentTitle = $item["department"];
+            $departmentSort = $item["dep_sort"];
+            $levelTitle = $item["level"];
+            $levelSort = $item["level_sort"];
+            $classTitle = $item["class"];
+            $classId = $item["class_id"];
+            $status = $item["status"];
+            $sort = $item["sort"];
+            $affix = $item["affix"];
+            // find college in result array
+            $collegeIndex = array_search($collegeTitle, array_column($result, 'title'));
+            if ($collegeIndex === false) {
+                $college = array(
+                    "type" => "college",
+                    "title" => $collegeTitle,
+                    "sort" => $collegeSrot,
+                    "children" => array()
+                );
+                $result[] = $college;
+                $collegeIndex = count($result) - 1;
             }
-
-            if (!isset($newArray[$college][$grade])) {
-                $newArray[$college][$grade] = [];
+            // find grade in college
+            $gradeIndex = array_search($gradeTitle, array_column($result[$collegeIndex]['children'], 'title'));
+            if ($gradeIndex === false) {
+                $grade = array(
+                    "type" => "grade",
+                    "title" => $gradeTitle,
+                    "sort" => $gradeSort,
+                    "children" => array()
+                );
+                $result[$collegeIndex]['children'][] = $grade;
+                $gradeIndex = count($result[$collegeIndex]['children']) - 1;
             }
-
-            if (!isset($newArray[$college][$grade][$department])) {
-                $newArray[$college][$grade][$department] = [];
+            // find department in grade
+            $departmentIndex = array_search($departmentTitle, array_column($result[$collegeIndex]['children'][$gradeIndex]['children'], 'title'));
+            if ($departmentIndex === false) {
+                $department = array(
+                    "type" => "department",
+                    "title" => $departmentTitle,
+                    "sort" =>  $departmentSort,
+                    "children" => array()
+                );
+                $result[$collegeIndex]['children'][$gradeIndex]['children'][] = $department;
+                $departmentIndex = count($result[$collegeIndex]['children'][$gradeIndex]['children']) - 1;
             }
-
-            if (!isset($newArray[$college][$grade][$department][$level])) {
-                $newArray[$college][$grade][$department][$level] = [];
+            // find level in department
+            $levelIndex = array_search($levelTitle, array_column($result[$collegeIndex]['children'][$gradeIndex]['children'][$departmentIndex]['children'], 'title'));
+            if ($levelIndex === false) {
+                $level = array(
+                    "type" => "level",
+                    "title" => $levelTitle,
+                    "sort" => $levelSort,
+                    "children" => array()
+                );
+                $result[$collegeIndex]['children'][$gradeIndex]['children'][$departmentIndex]['children'][] = $level;
+                $levelIndex = count($result[$collegeIndex]['children'][$gradeIndex]['children'][$departmentIndex]['children']) - 1;
             }
-
-            $count = count($newArray[$college][$grade][$department][$level]);
-            $newArray[$college][$grade][$department][$level]['class'][$count + 1] = [
-                'id' => $id,
-                'name' => $name,
-                'status' => $status,
-            ];
+            // add class to level
+            $class = array(
+                "type" => "class",
+                "class_id" => $classId,
+                "title" => $classTitle,
+                "sort" => $sort,
+                "status" => $status,
+                "affix" => $affix
+            );
+            $result[$collegeIndex]['children'][$gradeIndex]['children'][$departmentIndex]['children'][$levelIndex]['children'][] = $class;
         }
-        return [$newArray];
+        $treeList = $this->dealListId($result);
+        return $treeList;
     }
+
+    /**
+    *将传入的数组每个元素上添加了一个唯一的 id 属性。
+    *@param array $array 包含学院、年级、专业和班级信息的多维数组。
+    *@return array 包含了原数组的所有元素，并在每个元素上添加了一个唯一的 id 属性的新数组。
+    */
+    public function dealListId($array){
+        $newArray = [];
+        $id = 1;
+        foreach($array as $college) {
+          $collegeArr = [
+            "id" => $id++,
+            "type" => $college["type"],
+            "title" => $college["title"],
+            "sort" => $college['sort'],
+            "children" => []
+          ];
+          foreach($college["children"] as $grade) {
+            $gradeArr = [
+              "id" => $id++,
+              "type" => $grade["type"],
+              "title" => $grade["title"],
+              "sort" => $grade['sort'],
+              "children" => []
+            ];
+            foreach($grade["children"] as $department) {
+              $departmentArr = [
+                "id" => $id++,
+                "type" => $department["type"],
+                "title" => $department["title"],
+                "sort" => $department['sort'],
+                "children" => []
+              ];
+              foreach($department["children"] as $level) {
+                $levelArr = [
+                  "id" => $id++,
+                  "type" => $level["type"],
+                  "title" => $level["title"],
+                  "sort" => $level['sort'],
+                  "children" => []
+                ];
+                foreach($level["children"] as $class) {
+                  $classArr = [
+                    "id" => $id++,
+                    "class_id" => $class["class_id"],
+                    "type" => $class["type"],
+                    "title" => $class["title"],
+                    "sort" => $class["sort"],
+                    "status" => $class["status"],
+                    "affix" => $class["affix"]
+                  ];
+                  $levelArr["children"][] = $classArr;
+                }
+                $departmentArr["children"][] = $levelArr;
+              }
+              $gradeArr["children"][] = $departmentArr;
+            }
+            $collegeArr["children"][] = $gradeArr;
+          }
+          $newArray[] = $collegeArr;
+        }
+        return $newArray;
+    }
+
+      /**
+     * @name 添加
+     * @description
+     * @method  POST
+     * @param  data Array 添加数据
+     * @param  name String 姓名
+     * @param  phone String 手机号
+     * @param  password String 密码
+     * @param  password_confirmation String 确认密码
+     * @param  stdid Int 学号
+     * @param  class_id Int 班级ID
+     * @param  grade_id Int 年级ID
+     * @param  group_id Int 权限组
+     * @param  project_id Int 项目ID
+     * @param  status Int 状态:0=禁用,1=启用
+     * @param  sex Int 性别:0=未知,1=男，2=女
+     * @param  birth String 出生年月日
+     * @return JSON
+     **/
+    public function store(array $data)
+    {
+        return $this->commonCreate(College::query(),$data);
+    }
+
 
     /**
      * @name 添加子级返回父级id

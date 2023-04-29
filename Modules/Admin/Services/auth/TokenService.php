@@ -124,7 +124,7 @@ class TokenService extends BaseApiService
         return [
             'token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => JWTAuth::factory()->getTTL() * 60
+            'expires_in' => JWTAuth::factory()->getTTL() * 60*24
         ];
     }
 
