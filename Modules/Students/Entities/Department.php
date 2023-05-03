@@ -2,10 +2,10 @@
 /*
  * @Author: yumiazusa
  * @Date: 2023-02-27 16:35:05
- * @LastEditTime: 2023-04-04 14:13:27
- * @LastEditors: yumiazusa yumiazusa@hotmail.com
+ * @LastEditTime: 2023-04-29 12:14:10
+ * @LastEditors: yumiazusa
  * @Description: Grade模型
- * @FilePath: /www/miledo/server/Modules/Students/Entities/College.php
+ * @FilePath: /www/miledo/server/Modules/Students/Entities/Department.php
  * yumiazusa@hotmail.com
  */
 
@@ -33,10 +33,10 @@ class Department extends BaseApiModel
 	 * @description
 	 * @return JSON
 	 **/
-    public function departmentAttr()
-    {
-        return $this->hasMany('Modules\Students\Entities\ClassAttribution','department_id','id');
-    }
+    // public function departmentAttr()
+    // {
+    //     return $this->hasMany('Modules\Students\Entities\ClassAttribution','department_id','id');
+    // }
     
 
 }

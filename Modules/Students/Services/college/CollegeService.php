@@ -2,17 +2,17 @@
 /*
  * @Author: yumiazusa yumiazusa@hotmail.com
  * @Date: 2023-03-21 13:30:59
- * @LastEditors: yumiazusa yumiazusa@hotmail.com
- * @LastEditTime: 2023-04-23 14:31:13
- * @FilePath: /www/miledo/server/Modules/Students/Services/College/CollegeService.php
+ * @LastEditors: yumiazusa
+ * @LastEditTime: 2023-05-03 14:47:59
+ * @FilePath: /www/miledo/server/Modules/Students/Services/college/CollegeService.php
  * @Description: 学院年级班级管理服务
  */
 
 
 namespace Modules\Students\Services\College;
 
-
-
+use Modules\Common\Exceptions\MessageData;
+use Modules\Students\Entities\ClassAttribution;
 use Modules\Students\Entities\College;
 use Modules\Students\Entities\Colle;
 use Modules\Students\Entities\Department;
@@ -35,7 +35,7 @@ class CollegeService extends BaseApiService
             ->join('grade', 'grade.id', '=', 'attr.grade_id')
             ->join('department', 'department.id', '=', 'attr.department_id')
             ->join('level', 'level.id', '=', 'attr.level_id')
-            ->select('class.id as class_id', 'class.name as class', 'class.status', 'class.sort','class.affix','college.college', 'college.sort as college_sort', 'department.department', 'department.sort as dep_sort','grade.grade','grade.sort as grade_sort', 'level.level', 'level.sort as level_sort')
+            ->select('class.id as class_id', 'class.name as class', 'class.status', 'class.sort', 'class.affix', 'college.college', 'college.sort as college_sort','college.id as college_id', 'department.department', 'department.sort as dep_sort', 'department.id as dep_id','grade.grade', 'grade.sort as grade_sort','grade.id as grade_id', 'level.level', 'level.sort as level_sort','level.id as level_id')
             ->orderBy('college.sort', 'asc')
             ->orderBy('grade.sort', 'desc')
             ->orderBy('department.sort', 'asc')
@@ -60,12 +60,16 @@ class CollegeService extends BaseApiService
         foreach ($arr as $item) {
             $collegeTitle = $item["college"];
             $collegeSrot = $item["college_sort"];
+            $collegeId = $item["college_id"];
             $gradeTitle = $item["grade"];
             $gradeSort = $item["grade_sort"];
+            $gradeId = $item["grade_id"];
             $departmentTitle = $item["department"];
             $departmentSort = $item["dep_sort"];
+            $departmentId = $item["dep_id"];
             $levelTitle = $item["level"];
             $levelSort = $item["level_sort"];
+            $levelId = $item["level_id"];
             $classTitle = $item["class"];
             $classId = $item["class_id"];
             $status = $item["status"];
@@ -78,6 +82,7 @@ class CollegeService extends BaseApiService
                     "type" => "college",
                     "title" => $collegeTitle,
                     "sort" => $collegeSrot,
+                    "type_id" => $collegeId,
                     "children" => array()
                 );
                 $result[] = $college;
@@ -90,6 +95,7 @@ class CollegeService extends BaseApiService
                     "type" => "grade",
                     "title" => $gradeTitle,
                     "sort" => $gradeSort,
+                    "type_id" => $gradeId,
                     "children" => array()
                 );
                 $result[$collegeIndex]['children'][] = $grade;
@@ -102,6 +108,7 @@ class CollegeService extends BaseApiService
                     "type" => "department",
                     "title" => $departmentTitle,
                     "sort" =>  $departmentSort,
+                    "type_id" =>  $departmentId,
                     "children" => array()
                 );
                 $result[$collegeIndex]['children'][$gradeIndex]['children'][] = $department;
@@ -114,6 +121,7 @@ class CollegeService extends BaseApiService
                     "type" => "level",
                     "title" => $levelTitle,
                     "sort" => $levelSort,
+                    "type_id" => $levelId,
                     "children" => array()
                 );
                 $result[$collegeIndex]['children'][$gradeIndex]['children'][$departmentIndex]['children'][] = $level;
@@ -135,69 +143,74 @@ class CollegeService extends BaseApiService
     }
 
     /**
-    *将传入的数组每个元素上添加了一个唯一的 id 属性。
-    *@param array $array 包含学院、年级、专业和班级信息的多维数组。
-    *@return array 包含了原数组的所有元素，并在每个元素上添加了一个唯一的 id 属性的新数组。
-    */
-    public function dealListId($array){
+     *将传入的数组每个元素上添加了一个唯一的 id 属性。
+     *@param array $array 包含学院、年级、专业和班级信息的多维数组。
+     *@return array 包含了原数组的所有元素，并在每个元素上添加了一个唯一的 id 属性的新数组。
+     */
+    public function dealListId($array)
+    {
         $newArray = [];
         $id = 1;
-        foreach($array as $college) {
-          $collegeArr = [
-            "id" => $id++,
-            "type" => $college["type"],
-            "title" => $college["title"],
-            "sort" => $college['sort'],
-            "children" => []
-          ];
-          foreach($college["children"] as $grade) {
-            $gradeArr = [
-              "id" => $id++,
-              "type" => $grade["type"],
-              "title" => $grade["title"],
-              "sort" => $grade['sort'],
-              "children" => []
-            ];
-            foreach($grade["children"] as $department) {
-              $departmentArr = [
+        foreach ($array as $college) {
+            $collegeArr = [
                 "id" => $id++,
-                "type" => $department["type"],
-                "title" => $department["title"],
-                "sort" => $department['sort'],
+                "type" => $college["type"],
+                "title" => $college["title"],
+                "sort" => $college['sort'],
+                "type_id" => $college['type_id'],
                 "children" => []
-              ];
-              foreach($department["children"] as $level) {
-                $levelArr = [
-                  "id" => $id++,
-                  "type" => $level["type"],
-                  "title" => $level["title"],
-                  "sort" => $level['sort'],
-                  "children" => []
-                ];
-                foreach($level["children"] as $class) {
-                  $classArr = [
+            ];
+            foreach ($college["children"] as $grade) {
+                $gradeArr = [
                     "id" => $id++,
-                    "class_id" => $class["class_id"],
-                    "type" => $class["type"],
-                    "title" => $class["title"],
-                    "sort" => $class["sort"],
-                    "status" => $class["status"],
-                    "affix" => $class["affix"]
-                  ];
-                  $levelArr["children"][] = $classArr;
+                    "type" => $grade["type"],
+                    "title" => $grade["title"],
+                    "sort" => $grade['sort'],
+                    "type_id" => $grade['type_id'],
+                    "children" => []
+                ];
+                foreach ($grade["children"] as $department) {
+                    $departmentArr = [
+                        "id" => $id++,
+                        "type" => $department["type"],
+                        "title" => $department["title"],
+                        "sort" => $department['sort'],
+                        "type_id" => $department['type_id'],
+                        "children" => []
+                    ];
+                    foreach ($department["children"] as $level) {
+                        $levelArr = [
+                            "id" => $id++,
+                            "type" => $level["type"],
+                            "title" => $level["title"],
+                            "sort" => $level['sort'],
+                            "type_id" => $level['type_id'],
+                            "children" => []
+                        ];
+                        foreach ($level["children"] as $class) {
+                            $classArr = [
+                                "id" => $id++,
+                                "class_id" => $class["class_id"],
+                                "type" => $class["type"],
+                                "title" => $class["title"],
+                                "sort" => $class["sort"],
+                                "status" => $class["status"],
+                                "affix" => $class["affix"]
+                            ];
+                            $levelArr["children"][] = $classArr;
+                        }
+                        $departmentArr["children"][] = $levelArr;
+                    }
+                    $gradeArr["children"][] = $departmentArr;
                 }
-                $departmentArr["children"][] = $levelArr;
-              }
-              $gradeArr["children"][] = $departmentArr;
+                $collegeArr["children"][] = $gradeArr;
             }
-            $collegeArr["children"][] = $gradeArr;
-          }
-          $newArray[] = $collegeArr;
+            $newArray[] = $collegeArr;
         }
         return $newArray;
     }
 
-      /**
+    /**
      * @name 添加
      * @description
      * @method  POST
@@ -218,9 +231,138 @@ class CollegeService extends BaseApiService
      **/
     public function store(array $data)
     {
-        return $this->commonCreate(College::query(),$data);
+        $store[$data['type']] = $data['title'];
+        $store['sort'] = $data['sort'];
+        switch ($data['type']) {
+            case "college":
+                return $this->collegeCreate(Colle::query(), $store);
+                break;
+            case "grade":
+                return $this->collegeCreate(Grade::query(), $store);
+                break;
+            case "department":
+                return $this->collegeCreate(Department::query(), $store);
+                break;
+            case "level":
+                return $this->collegeCreate(Level::query(), $store);
+                break;
+            default:
+        }
     }
 
+     /**
+     * @name 修改页面
+     * @param  id Int 管理员id
+     * @return JSON
+     **/
+    public function edit(array $data){
+        if($data['type'] == 'class' ){
+            $list= College::join('class_attribution as attr', 'attr.class_id', '=', 'class.id')
+            ->join('college', 'college.id', '=', 'attr.college_id')
+            ->join('grade', 'grade.id', '=', 'attr.grade_id')
+            ->join('department', 'department.id', '=', 'attr.department_id')
+            ->join('level', 'level.id', '=', 'attr.level_id')
+            ->select('class.id as class_id', 'class.name','class.sort', 'college.college','college.id as college_id', 'department.department', 'department.id as department_id','grade.grade', 'grade.id as grade_id', 'level.level','level.id as level_id')
+            ->where('class.id','=',$data['id'])
+            ->get()
+            ->toArray();
+        }else{
+            switch ($data['type']) {
+                case "college":
+                    $list = Colle::where('id','=',$data['id'])->select('college.college as title','college.sort')->get()->toArray();
+                    break;
+                case "grade":
+                    $list = Grade::where('id','=',$data['id'])->select('grade.grade as title','grade.sort')->get()->toArray();
+                    break;
+                case "department":
+                    $list = Department::where('id','=',$data['id'])->select('department.department as title','department.sort')->get()->toArray();
+                    break;
+                case "level":
+                    $list = Level::where('id','=',$data['id'])->select('level.level as title','level.sort')->get()->toArray();
+                    break;
+                default:
+            }
+        }
+        if($list){
+            $list[0]['type'] = $data['type'];
+            return $this->apiSuccess('',$list);
+        }else{
+            return $this->apiError(MessageData::NO_DATA_EXISTS);
+        }
+        
+    }
+
+
+    /**
+     *创建学院年级系部层次方法，并判断是否有重复数据
+     *@param mixed $model 数据库模型
+     *@param array $data 要插入的数据
+     *@param string $successMessage 成功消息
+     *@param string $errorMessage 唯一性字段错误消息
+     *@return mixed
+     *@throws \Throwable
+     */
+    public function collegeCreate($model, array $data = [], string $successMessage = MessageData::ADD_API_SUCCESS, string $errorMessage = MessageData::FIELD_UNIQUE)
+    {
+        $data['created_at'] = date('Y-m-d H:i:s');
+        try {
+            $model->insert($data);
+        } catch (\PDOException $e) {
+            if ($e->errorInfo[1] == 1062) {
+                // 1062 是唯一性冲突的错误代码
+                // 处理唯一性错误
+                return $this->apiError($errorMessage);
+            } else {
+                return $this->apiError(MessageData::ADD_API_ERROR);
+            }
+        }
+        return $this->apiSuccess($successMessage);
+    }
+
+    public function attr(){
+        $collegelist = Colle::select('id as college_id','college','sort as college_sort')
+        ->orderBy('college_sort', 'asc')
+        ->get()->toArray();
+        $gradelist = Grade::select('id as grade_id','grade','sort as grade_sort')
+        ->orderBy('grade_sort', 'asc')
+        ->get()->toArray();
+        $departmentlist = Department::select('id as department_id','department','sort as department_sort')
+        ->orderBy('department_sort', 'asc')
+        ->get()->toArray();
+        $levellist = Level::select('id as level_id','level','sort as level_sort')
+        ->orderBy('level_sort', 'asc')
+        ->get()->toArray();
+        return $this->apiSuccess('', [$collegelist,$gradelist,$departmentlist,$levellist]);
+    }
+
+    public function classStore(array $data){
+        $data['created_at'] = date('Y-m-d H:i:s');
+        try {
+            $class_id = College::insertGetId(['name'=>$data['name'],'sort'=>$data['sort'],'created_at'=>$data['created_at']]);
+        } catch (\PDOException $e) {
+            if ($e->errorInfo[1] == 1062) {
+                // 1062 是唯一性冲突的错误代码
+                // 处理唯一性错误
+                return $this->apiError(MessageData::FIELD_UNIQUE);
+            } else {
+                return $this->apiError(MessageData::ADD_API_ERROR);
+            }
+        }
+        if($class_id){
+            return $this->commonCreate(ClassAttribution::query(),
+            ['class_id'=>$class_id,
+            'college_id'=>$data['college_id'],
+            'grade_id'=>$data['grade_id'],
+            'department_id'=>$data['department_id'],
+            'level_id'=>$data['level_id'],
+            ]);
+        }
+        $this->apiError(MessageData::ADD_API_ERROR);
+        
+        // $class_id = $this->collegeCreate(College::query(), ['name'=>$data['name'],'sort'=>$data['sort']]);
+        // dd($class_id);
+        // return $this->apiSuccess('',);
+    }
 
     /**
      * @name 添加子级返回父级id
@@ -252,8 +394,6 @@ class CollegeService extends BaseApiService
     /**
      * @name 递归遍历数据
      * @description
-     * @author 西安咪乐多软件
-     * @date 2021/6/14 10:13
      * @param id Int 父级id
      * @param list Array 权限信息
      * @return Array 返回获取当前的删除id的其他子id

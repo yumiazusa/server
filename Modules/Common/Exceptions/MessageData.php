@@ -24,8 +24,10 @@ namespace Modules\Common\Exceptions;
 class MessageData
 {
     const BAD_REQUEST = '服务端异常！';
+    const FIELD_UNIQUE = '数据已存在！';
     const INTERNAL_SERVER_ERROR = '服务器错误！';
     const Ok = '操作成功！';
+    const NO_DATA_EXISTS = '数据不存在';
     const PARES_ERROR = '服务器语法错误！';
     const Error = '服务器语法错误，请注意查看信息！';
     const REFLECTION_EXCEPTION = '服务器异常映射！';

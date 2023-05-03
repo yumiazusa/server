@@ -16,12 +16,14 @@ class CommonIdRequest extends FormRequest
     {
         return [
 			'id' => 'required|is_positive_integer',
+            'type' =>'required',
         ];
     }
 	public function messages(){
 		return [
 			'id.required' 				=> '缺少参数(id)!',
 			'id.is_positive_integer' 	=> '(id)参数错误!',
+            'type.required'=>'请确认类型',
 		];
 	}
 }

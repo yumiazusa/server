@@ -2,17 +2,19 @@
 /*
  * @Author: yumiazusa
  * @Date: 2023-02-26 10:53:07
- * @LastEditTime: 2023-04-26 23:02:40
- * @LastEditors: yumiazusa yumiazusa@hotmail.com
+ * @LastEditTime: 2023-05-02 13:19:36
+ * @LastEditors: yumiazusa
  * @Description: 学院年级班级模块控制器
- * @FilePath: /www/miledo/server/Modules/Students/Http/Controllers/v1/StudentsController.php
+ * @FilePath: /www/miledo/server/Modules/Students/Http/Controllers/v1/CollegeController.php
  * yumiazusa@hotmail.com
  */
 
 namespace Modules\Students\Http\Controllers\v1;
 
+use Modules\Students\Http\Requests\ClassCreateRequest;
 use Modules\Students\Http\Requests\CollegeCreateRequest;
 use Modules\Students\Http\Requests\CollegeUpdateRequest;
+use Modules\Students\Http\Requests\CommonIdRequest;
 use Modules\Students\Services\College\CollegeService;
 
 class CollegeController extends BaseApiController
@@ -60,21 +62,37 @@ class CollegeController extends BaseApiController
     public function store(CollegeCreateRequest $request)
     {
         return (new CollegeService())->store($request->only([
-            'college',
+            'type',
+            'title',
+            'sort'
         ]));
     }
 
-    //  /**
-    //  * @name 编辑页面
-    //  * @description
-    //  * @method  GET
-    //  * @param  id Int 会员id
-    //  * @return JSON
-    //  **/
-    // public function edit(CommonIdRequest $request)
-    // {
-    //     return (new StudentsService())->edit($request->get('id'));
-    // }
+    public function classStore(ClassCreateRequest $request)
+    {
+        return (new CollegeService())->classStore($request->only([
+            'name',
+            'college_id',
+            'department_id',
+            'grade_id',
+            'level_id',
+            'sort'
+        ]));
+    }
+
+     /**
+     * @name 编辑页面
+     * @description
+     * @method  GET
+     * @param  id Int 会员id
+     * @return JSON
+     **/
+    public function edit(CommonIdRequest $request)
+    {
+        return (new CollegeService())->edit($request->only(['id','type']));
+    }
+    
+    
     /**
      * @name 编辑提交
      * @description
@@ -138,5 +156,8 @@ class CollegeController extends BaseApiController
     // {
     //     return (new StudentsService())->updatePwd($request->get('id'));
     // }
-       
+    
+    public function attr(){
+        return (new CollegeService())->attr();
+    }
 }
