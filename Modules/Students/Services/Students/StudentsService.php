@@ -2,7 +2,7 @@
 /*
  * @Author: yumiazusa
  * @Date: 2023-02-27 16:32:04
- * @LastEditTime: 2023-04-18 14:09:47
+ * @LastEditTime: 2023-05-13 09:47:18
  * @LastEditors: yumiazusa yumiazusa@hotmail.com
  * @Description: Students的服务类
  * @FilePath: /www/miledo/server/Modules/Students/Services/Students/StudentsService.php
@@ -14,6 +14,11 @@ namespace Modules\Students\Services\Students;
 
 use Modules\Students\Entities\Students;
 use Modules\Students\Services\BaseApiService;
+use Modules\Students\Entities\Colle;
+use Modules\Students\Entities\College;
+use Modules\Students\Entities\Department;
+use Modules\Students\Entities\Grade;
+use Modules\Students\Entities\Level;
 
 class StudentsService extends BaseApiService
 {
@@ -36,16 +41,68 @@ class StudentsService extends BaseApiService
     public function index(array $data)
     {
         $model = Students::query();
-        $model = $this->queryCondition($model,$data,'nickname');
-        if (isset($data['sex']) && $data['sex'] != ''){
-            $model = $model->where('sex',$data['sex']);
+        if (!empty($data['created_at'])){
+            $model = $model->whereBetween('created_at',$data['created_at']);
         }
-        $list = $model->orderBy('id','desc')
-            ->paginate($data['limit'])
-            ->toArray();
+        if (!empty($data['updated_at'])){
+            $model = $model->whereBetween('updated_at',$data['updated_at']);
+        }
+        if (!empty($data['name'])){
+            $model = $model->where('students.name','like','%' . $data['name'] . '%');
+        }
+        if (!empty($data['stdid'])){
+            $model = $model->where('students.stdid','like','%' . $data['stdid'] . '%');
+        }
+        if (isset($params['status']) && $params['status'] != ''){
+            $model = $model->where('status',$params['status']);
+        }
+        if (isset($data['sex']) && $data['sex'] != ''){
+            $model = $model->where('students.sex',$data['sex']);
+        }
+        if (isset($data['status']) && $data['status'] != ''){
+            $model = $model->where(['students.status' => $data['status'],'cla.status'=> 1 ]);
+        }
+        if (isset($data['college']) && $data['college'] != ''){
+            $model = $model->where(['college.id' => $data['college']]);
+        }
+        if (isset($data['grade']) && $data['grade'] != ''){
+            $model = $model->where(['grade.id' => $data['grade']]);
+        }
+        if (isset($data['department']) && $data['department'] != ''){
+            $model = $model->where(['department.id' => $data['department']]);
+        }
+        if (isset($data['level']) && $data['level'] != ''){
+            $model = $model->where(['level.id' => $data['level']]);
+        }
+        if (isset($data['class']) && $data['class'] != ''){
+            $model = $model->where(['cla.id' => $data['class']]);
+        }
+        $list = $model->join('class as cla', 'cla.id', '=', 'class_id')
+        ->join('class_attribution as attr', 'attr.class_id', '=', 'cla.id')
+        ->join('college', 'college.id', '=', 'attr.college_id')
+        ->join('grade', 'grade.id', '=', 'attr.grade_id')
+        ->join('department', 'department.id', '=', 'attr.department_id')
+        ->join('level', 'level.id', '=', 'attr.level_id')
+        ->where(['cla.is_delete'=> 0])
+        ->select('students.*','cla.name as class_name','college.college','college.id as college_id', 'department.department', 'department.id as dep_id','grade.grade','grade.id as grade_id', 'level.level', 'level.id as level_id')
+        ->orderBy('id','desc')
+        ->paginate($data['limit'])
+        ->toArray();
+
+        $college = Colle::get()->toArray();
+        $grade = Grade::get()->toArray();
+        $department = Department::get()->toArray();
+        $level = Level::get()->toArray();
+        $class = College::where(['is_delete'=> 0])->get()->toArray();
+
         return $this->apiSuccess('',[
             'list'=>$list['data'],
-            'total'=>$list['total']
+            'total'=>$list['total'],
+            'college'=>$college, 
+            'grade'=>$grade, 
+            'department'=>$department, 
+            'level'=>$level,
+            'class'=>$class
         ]);
     }
 

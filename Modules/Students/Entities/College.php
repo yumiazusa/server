@@ -2,7 +2,7 @@
 /*
  * @Author: yumiazusa
  * @Date: 2023-02-27 16:35:05
- * @LastEditTime: 2023-04-07 11:13:33
+ * @LastEditTime: 2023-05-05 11:19:47
  * @LastEditors: yumiazusa yumiazusa@hotmail.com
  * @Description: College模型
  * @FilePath: /www/miledo/server/Modules/Students/Entities/College.php
@@ -34,9 +34,9 @@ class College extends BaseApiModel
 	 * @description
 	 * @return JSON
 	 **/
-    public function collegeAttr()
+    public function classAttr()
     {
-        return $this->hasMany('Modules\Students\Entities\ClassAttribution','college_id','id');
+        return $this->hasMany(ClassAttribution::class, 'class_id');
     }
     
 

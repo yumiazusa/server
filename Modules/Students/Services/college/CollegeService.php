@@ -2,8 +2,8 @@
 /*
  * @Author: yumiazusa yumiazusa@hotmail.com
  * @Date: 2023-03-21 13:30:59
- * @LastEditors: yumiazusa
- * @LastEditTime: 2023-05-03 14:47:59
+ * @LastEditors: yumiazusa yumiazusa@hotmail.com
+ * @LastEditTime: 2023-05-13 11:26:57
  * @FilePath: /www/miledo/server/Modules/Students/Services/college/CollegeService.php
  * @Description: 学院年级班级管理服务
  */
@@ -28,20 +28,42 @@ class CollegeService extends BaseApiService
      * @description
      * @return JSON
      **/
-    public function index()
+    public function index(int $delete = 0)
     {
-        $list = College::join('class_attribution as attr', 'attr.class_id', '=', 'class.id')
+        if($delete){
+            // $list = College::join('class_attribution as attr', 'attr.class_id', '=', 'class.id')
+            // ->join('college', 'college.id', '=', 'attr.college_id')
+            // ->join('grade', 'grade.id', '=', 'attr.grade_id')
+            // ->join('department', 'department.id', '=', 'attr.department_id')
+            // ->join('level', 'level.id', '=', 'attr.level_id')
+            // ->where(['is_delete'=>1])
+            // ->select('class.id as class_id', 'class.name as class', 'class.status', 'class.sort', 'class.affix', 'college.college', 'college.sort as college_sort','college.id as college_id', 'department.department', 'department.sort as dep_sort', 'department.id as dep_id','grade.grade', 'grade.sort as grade_sort','grade.id as grade_id', 'level.level', 'level.sort as level_sort','level.id as level_id')
+            // ->orderBy('college.sort', 'asc')
+            // ->orderBy('grade.sort', 'asc')
+            // ->orderBy('department.sort', 'asc')
+            // ->orderBy('level.sort', 'asc')
+            // ->orderBy('class.sort', 'asc')
+            // ->get()->toArray();
+            $list = College::where(['is_delete'=>1])
+            ->orderBy('class.sort', 'asc')
+            ->get()->toArray();
+            $treeList = $list;
+        }else{
+            $list = College::join('class_attribution as attr', 'attr.class_id', '=', 'class.id')
             ->join('college', 'college.id', '=', 'attr.college_id')
             ->join('grade', 'grade.id', '=', 'attr.grade_id')
             ->join('department', 'department.id', '=', 'attr.department_id')
             ->join('level', 'level.id', '=', 'attr.level_id')
+            ->where(['is_delete'=>0])
             ->select('class.id as class_id', 'class.name as class', 'class.status', 'class.sort', 'class.affix', 'college.college', 'college.sort as college_sort','college.id as college_id', 'department.department', 'department.sort as dep_sort', 'department.id as dep_id','grade.grade', 'grade.sort as grade_sort','grade.id as grade_id', 'level.level', 'level.sort as level_sort','level.id as level_id')
             ->orderBy('college.sort', 'asc')
-            ->orderBy('grade.sort', 'desc')
+            ->orderBy('grade.sort', 'asc')
             ->orderBy('department.sort', 'asc')
             ->orderBy('level.sort', 'asc')
+            ->orderBy('class.sort', 'asc')
             ->get()->toArray();
-        $treeList = $this->dealList($list);
+            $treeList = $this->dealList($list);
+        }
         $college = Colle::get()->toArray();
         $grade = Grade::get()->toArray();
         $department = Department::get()->toArray();
@@ -252,7 +274,7 @@ class CollegeService extends BaseApiService
 
      /**
      * @name 修改页面
-     * @param  id Int 管理员id
+     * @param  id Int 班级id
      * @return JSON
      **/
     public function edit(array $data){
@@ -262,23 +284,23 @@ class CollegeService extends BaseApiService
             ->join('grade', 'grade.id', '=', 'attr.grade_id')
             ->join('department', 'department.id', '=', 'attr.department_id')
             ->join('level', 'level.id', '=', 'attr.level_id')
-            ->select('class.id as class_id', 'class.name','class.sort', 'college.college','college.id as college_id', 'department.department', 'department.id as department_id','grade.grade', 'grade.id as grade_id', 'level.level','level.id as level_id')
-            ->where('class.id','=',$data['id'])
+            ->select('class.id', 'class.name','class.sort', 'college.college','college.id as college_id', 'department.department', 'department.id as department_id','grade.grade', 'grade.id as grade_id', 'level.level','level.id as level_id')
+            ->where(['class.id'=>$data['id'],'is_delete'=> 0])
             ->get()
             ->toArray();
         }else{
             switch ($data['type']) {
                 case "college":
-                    $list = Colle::where('id','=',$data['id'])->select('college.college as title','college.sort')->get()->toArray();
+                    $list = Colle::where('id','=',$data['id'])->select('college.id','college.college as title','college.sort')->get()->toArray();
                     break;
                 case "grade":
-                    $list = Grade::where('id','=',$data['id'])->select('grade.grade as title','grade.sort')->get()->toArray();
+                    $list = Grade::where('id','=',$data['id'])->select('grade.id','grade.grade as title','grade.sort')->get()->toArray();
                     break;
                 case "department":
-                    $list = Department::where('id','=',$data['id'])->select('department.department as title','department.sort')->get()->toArray();
+                    $list = Department::where('id','=',$data['id'])->select('department.id','department.department as title','department.sort')->get()->toArray();
                     break;
                 case "level":
-                    $list = Level::where('id','=',$data['id'])->select('level.level as title','level.sort')->get()->toArray();
+                    $list = Level::where('id','=',$data['id'])->select('level.id','level as title','level.sort')->get()->toArray();
                     break;
                 default:
             }
@@ -358,39 +380,8 @@ class CollegeService extends BaseApiService
             ]);
         }
         $this->apiError(MessageData::ADD_API_ERROR);
-        
-        // $class_id = $this->collegeCreate(College::query(), ['name'=>$data['name'],'sort'=>$data['sort']]);
-        // dd($class_id);
-        // return $this->apiSuccess('',);
     }
 
-    /**
-     * @name 添加子级返回父级id
-     * @description
-     * @param  pid Int 父级id
-     * @return JSON
-     **/
-    public function pidArr(int $pid)
-    {
-        $value = [];
-        if ($pid != 0) {
-            $value = $this->superiorArrId($pid);
-        }
-        return $this->apiSuccess('', $value);
-    }
-    /**
-     * @name 获取菜单id
-     * @description
-     * @author 西安咪乐多软件
-     * @date 2021/6/14 10:14
-     * @param pid Int 父级id
-     * @return Array
-     **/
-    private function superiorArrId(int $pid): array
-    {
-        $list = College::select('id', 'pid')->orderBy('id', 'asc')->get()->toArray();
-        return array_reverse($this->superiorArrIdSort($list, $pid));
-    }
     /**
      * @name 递归遍历数据
      * @description
@@ -411,43 +402,87 @@ class CollegeService extends BaseApiService
         }
         return $arr;
     }
-    // /**
-    //  * @name 修改提交
-    //  * @description
-    //  * @author 西安咪乐多软件
-    //  * @date 2021/6/12 4:03
-    //  * @param  data Array 修改数据
-    //  * @param id Int 权限id
-    //  * @param  data.pid Int 父级ID
-    //  * @param  data.path String 标识
-    //  * @param  data.url String 路由文件
-    //  * @param  data.redirect String 重定向路径
-    //  * @param  data.name String 权限名称
-    //  * @param  data.type Int 菜单类型:1=模块,2=目录,3=菜单
-    //  * @param  data.status Int 侧边栏显示状态:0=隐藏,1=显示
-    //  * @param  data.auth_open Int 是否验证权限:0=否,1=是
-    //  * @param  data.level Int 级别
-    //  * @param  data.affix Int 是否固定面板:0=否,1=是
-    //  * @param  data.icon String 图标名称
-    //  * @param  data.sort Int 排序
-    //  * @return JSON
-    //  **/
-    // public function update(int $id,array $data){
-    //     return $this->commonUpdate(AuthRule::query(),$id,$data);
-    // }
-    // /**
-    //  * @name 调整状态
-    //  * @description
-    //  * @author 西安咪乐多软件
-    //  * @date 2021/6/12 4:06
-    //  * @param  data Array 调整数据
-    //  * @param  id Int 菜单id
-    //  * @param  data.status Int 状态（0或1）
-    //  * @return JSON
-    //  **/
-    // public function status(int $id,array $data){
-    //     return $this->commonStatusUpdate(AuthRule::query(),$id,$data);
-    // }
+    /**
+     * @name 修改提交
+     * @description
+     * @param  data Array 修改数据
+     * @param id Int 学院年级系部层次id
+     * @param  type String 学院年级系部层次种类
+     * @param  data.title String 学院年级系部层次名称
+     * @param  data.sort Int 排序
+     * @return JSON
+     **/
+    public function update(string $type,array $data){
+        switch ($type) {
+            case "college":
+                $model = new Colle();
+                break;
+            case "grade":
+                $model = new Grade();
+                break;
+            case "department":
+                $model = new Department();
+                break;
+            case "level":
+                $model = new Level();
+                break;
+            default:
+        }
+        $store[$type] = $data['title'];
+        $store['sort'] = $data['sort'];
+        try {
+            $model->where('id',$data['id'])->update($store);
+        } catch (\PDOException $e) {
+            if ($e->errorInfo[1] == 1062) {
+                // 1062 是唯一性冲突的错误代码
+                // 处理唯一性错误
+                return $this->apiError(MessageData::FIELD_UNIQUE);
+            } else {
+                return $this->apiError(MessageData::ADD_API_ERROR);
+            }
+        }
+        return $this->apiSuccess(MessageData::UPDATE_API_SUCCESS);
+    }
+
+    public function classUpdate(string $type,array $data){
+       if($type === 'class'){
+        try {
+            $class = College::findOrFail($data['id']);
+            $class->name = $data['name'];
+            $class->sort = $data['sort'];
+            $class->save();
+            $class->classAttr()->update([
+                'college_id' => $data['college_id'],
+                'department_id' =>  $data['department_id'],
+                'grade_id' =>  $data['grade_id'],
+                'level_id' =>  $data['level_id'],
+            ]);
+        } catch (\PDOException $e) {
+            if ($e->errorInfo[1] == 1062) {
+                // 1062 是唯一性冲突的错误代码
+                // 处理唯一性错误
+                return $this->apiError(MessageData::FIELD_UNIQUE);
+            } else {
+                return $this->apiError(MessageData::ADD_API_ERROR);
+            }
+        }
+        return $this->apiSuccess(MessageData::UPDATE_API_SUCCESS);
+       }
+       return $this->apiError(MessageData::ADD_API_ERROR);
+    }
+
+    /**
+     * @name 调整状态
+     * @description
+     * @param  data Array 调整数据
+     * @param  id Int 菜单id
+     * @param  data.status Int 状态（0或1）
+     * @return JSON
+     **/
+    public function status(int $id,array $data){
+        return $this->commonStatusUpdate(College::query(),$id,$data);
+    }
+    
     /**
      * @name 排序
      * @description
@@ -459,83 +494,60 @@ class CollegeService extends BaseApiService
      * @return JSON
      **/
     public function sorts(int $id, array $data)
-    {
-        return $this->commonSortsUpdate(College::query(), $id, $data);
+    {   
+        // return $data;
+        switch ($data['type']) {
+            case "class":
+                $model = new College();
+                break;
+            case "college":
+                $model = new Colle();
+                break;
+            case "grade":
+                $model = new Grade();
+                break;
+            case "department":
+                $model = new Department();
+                break;
+            case "level":
+                $model = new Level();
+                break;
+            default:
+        }
+        unset($data['type']);
+        return $this->commonSortsUpdate($model::query(),$id,$data);
     }
-    // /**
-    //  * @name 是否验证权限
-    //  * @description
-    //  * @author 西安咪乐多软件
-    //  * @date 2021/6/12 4:06
-    //  * @param  data Array 调整数据
-    //  * @param  id Int 菜单id
-    //  * @param  data.auth_open Int 状态（0或1）
-    //  * @return JSON
-    //  **/
-    // public function open(int $id,array $data){
-    //     return $this->commonStatusUpdate(AuthRule::query(),$id,$data);
-    // }
-    // /**
-    //  * @name 固定面板
-    //  * @description
-    //  * @author 西安咪乐多软件
-    //  * @date 2021/6/12 4:06
-    //  * @param  data Array 调整数据
-    //  * @param  id Int 菜单id
-    //  * @param  data.affix Int 是否固定面板:0=否,1=是
-    //  * @return JSON
-    //  **/
-    // public function affix(int $id,array $data){
-    //     return $this->commonStatusUpdate(AuthRule::query(),$id,$data);
-    // }
-    // /**
-    //  * @name 删除
-    //  * @description
-    //  * @author 西安咪乐多软件
-    //  * @date 2021/6/14 10:16
-    //  * @param id Int 菜单id
-    //  * @return JSON
-    //  **/
-    // public function cDestroy(int $id){
-    //     $idArr = $this->ids($id);
-    //     return $this->commonDestroy(AuthRule::query(),$idArr);
-    // }
+  
     /**
-     * @name 获取菜单id
+     * @name 固定面板
+     * @description
+     * @param  data Array 调整数据
+     * @param  id Int 菜单id
+     * @param  data.affix Int 是否固定面板:0=否,1=是
+     * @return JSON
+     **/
+    public function affix(int $id,array $data){
+        return $this->commonStatusUpdate(College::query(),$id,$data);
+    }
+    /**
+     * @name 删除
      * @description
      * @author 西安咪乐多软件
-     * @date 2021/6/14 10:14
-     * @param id Int 当前删除数据id
-     * @return Array
+     * @date 2021/6/14 10:16
+     * @param id Int 菜单id
+     * @return JSON
      **/
-    private function ids(int $id): array
-    {
-        $College = College::select('id', 'pid')->get()->toArray();
-        $arr = $this->delSort($College, $id);
-        $arr[] = $id;
-        return $arr;
+    public function delete(int $id){
+        return $this->commonIsDelete(College::query(),[$id]);
     }
 
-    /**
-     * @name 递归遍历数据
-     * @description
-     * @author 西安咪乐多软件
-     * @date 2021/6/14 10:13
-     * @param id Int 当前删除数据id
-     * @param College Array 学院年级班级信息
-     * @return Array 返回获取当前的删除id的其他子id
-     **/
-    public function delSort(array $College, int $id): array
-    {
-        //创建新数组
-        static $arr = array();
-        foreach ($College as $k => $v) {
-            if ($v['pid'] == $id) {
-                $arr[] = $v['id'];
-                unset($College[$k]);
-                $this->delSort($College, $v['id']);
-            }
-        }
-        return $arr;
+    //回收
+    public function recycle(int $id){
+        return $this->commonRecycleIsDelete(College::query(),[$id]);
+    }
+
+    //真删除
+    public function realDestroy(int $id){
+        return $this->commonDestroy(College::query(),[$id]);
     }
 }

@@ -2,8 +2,8 @@
 /*
  * @Author: yumiazusa
  * @Date: 2023-02-26 10:53:07
- * @LastEditTime: 2023-03-14 23:41:30
- * @LastEditors: yumiazusa
+ * @LastEditTime: 2023-05-13 09:47:59
+ * @LastEditors: yumiazusa yumiazusa@hotmail.com
  * @Description: 学生模块控制器
  * @FilePath: /www/miledo/server/Modules/Students/Http/Controllers/v1/StudentsController.php
  * yumiazusa@hotmail.com
@@ -22,7 +22,7 @@ use Modules\Students\Services\Students\UpdatePasswordService;
 
 class StudentsController extends BaseApiController
 {
-     /**
+    /**
      * @name 列表数据
      * @description
      * @method  GET
@@ -44,22 +44,21 @@ class StudentsController extends BaseApiController
             'page',
             'limit',
             'name',
-            'birth',
             'sex',
-            'phone',
-            'email',
+            'college',
+            'grade',
+            'department',
+            'level',
+            'class',
             'stdid',
             'class_id',
-            'group_id',
-            'grade_id',
-            'project_id',
             'status',
             'created_at',
             'updated_at',
         ]));
     }
 
-     /**
+    /**
      * @name 添加
      * @description
      * @method  POST
@@ -87,7 +86,6 @@ class StudentsController extends BaseApiController
             'password',
             'stdid',
             'class_id',
-            'grade_id',
             'project_id',
             'status',
             'sex',
@@ -95,7 +93,7 @@ class StudentsController extends BaseApiController
         ]));
     }
 
-     /**
+    /**
      * @name 编辑页面
      * @description
      * @method  GET
@@ -130,7 +128,7 @@ class StudentsController extends BaseApiController
      **/
     public function update(StudentsUpdateRequest $request)
     {
-        return (new StudentsService())->update($request->get('id'),$request->only([
+        return (new StudentsService())->update($request->get('id'), $request->only([
             'name',
             'phone',
             'email',
@@ -144,7 +142,7 @@ class StudentsController extends BaseApiController
         ]));
     }
 
-     /**
+    /**
      * @name 调整状态
      * @description
      * @method  PUT
@@ -154,7 +152,7 @@ class StudentsController extends BaseApiController
      **/
     public function status(CommonStatusRequest $request)
     {
-        return (new StudentsService())->status($request->get('id'),$request->only(['status']));
+        return (new StudentsService())->status($request->get('id'), $request->only(['status']));
     }
 
     /**
@@ -168,10 +166,10 @@ class StudentsController extends BaseApiController
      **/
     public function changePwd(PwdRequest $request)
     {
-        return (new UpdatePasswordService())->upadtePwd($request->only(['id','y_password','password']));
+        return (new UpdatePasswordService())->upadtePwd($request->only(['id', 'y_password', 'password']));
     }
 
-     /**
+    /**
      * @name 初始化密码
      * @description
      * @method  PUT
@@ -182,5 +180,4 @@ class StudentsController extends BaseApiController
     {
         return (new StudentsService())->updatePwd($request->get('id'));
     }
-       
 }

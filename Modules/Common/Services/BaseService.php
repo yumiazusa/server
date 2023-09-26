@@ -2,8 +2,8 @@
 /*
  * @Author: yumiazusa
  * @Date: 2022-12-08 10:24:52
- * @LastEditTime: 2023-04-29 13:47:20
- * @LastEditors: yumiazusa
+ * @LastEditTime: 2023-05-07 17:17:18
+ * @LastEditors: yumiazusa yumiazusa@hotmail.com
  * @Description: 服务基类
  * @FilePath: /www/miledo/server/Modules/Common/Services/BaseService.php
  * yumiazusa@hotmail.com
@@ -48,6 +48,34 @@ class BaseService
         }
         return $model;
     }
+
+    /**
+     * @name 无status的查询条件
+     * @description
+     * @method  GET
+     * @param model Model 模型
+     * @param params Array 查询参数
+     * @param key String 模糊查询参数
+     * @return Object
+     **/
+    function queryConditionWithoutStatus(object $model,array $params,string $table,string $name="name",string $stdid="stdid"):Object
+    {
+        if (!empty($params['created_at'])){
+            $model = $model->whereBetween('created_at',$params['created_at']);
+        }
+        if (!empty($params['updated_at'])){
+            $model = $model->whereBetween('updated_at',$params['updated_at']);
+        }
+        if (!empty($params[$name])){
+            $model = $model->where($table.'.'.$name,'like','%' . $params[$name] . '%');
+        }
+        if (!empty($params[$stdid])){
+            $model = $model->where($table.'.'.$stdid,'like','%' . $params[$stdid] . '%');
+        }
+        return $model;
+    }
+
+
     /**
      * @name  成功返回
      * @description  用于所有的接口返回
