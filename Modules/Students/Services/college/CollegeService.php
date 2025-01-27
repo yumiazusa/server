@@ -3,13 +3,14 @@
  * @Author: yumiazusa yumiazusa@hotmail.com
  * @Date: 2023-03-21 13:30:59
  * @LastEditors: yumiazusa yumiazusa@hotmail.com
- * @LastEditTime: 2023-05-13 11:26:57
+ * @LastEditTime: 2025-01-27 19:15:09
  * @FilePath: /www/miledo/server/Modules/Students/Services/college/CollegeService.php
  * @Description: 学院年级班级管理服务
  */
 
 
-namespace Modules\Students\Services\College;
+// namespace Modules\Students\Services\College;
+namespace Modules\Students\Services\college;
 
 use Modules\Common\Exceptions\MessageData;
 use Modules\Students\Entities\ClassAttribution;
