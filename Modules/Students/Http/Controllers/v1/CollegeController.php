@@ -2,7 +2,7 @@
 /*
  * @Author: yumiazusa
  * @Date: 2023-02-26 10:53:07
- * @LastEditTime: 2023-05-13 11:06:32
+ * @LastEditTime: 2025-01-27 18:53:56
  * @LastEditors: yumiazusa yumiazusa@hotmail.com
  * @Description: 学院年级班级模块控制器
  * @FilePath: /www/miledo/server/Modules/Students/Http/Controllers/v1/CollegeController.php
@@ -43,7 +43,8 @@ class CollegeController extends BaseApiController
      **/
     public function index()
     {
-        return (new CollegeService())->index();
+        return 1;
+        // return (new CollegeService())->index();
     }
 
     public function deleteList()
